@@ -62,6 +62,34 @@ function button:new(obj)
     return temp
 end
 
+--이미지객체 기본값 설정
+image =
+    Control:init {
+    path = "폴더/파일명.png",
+    width = 100,
+    height = 100,
+    imageType = 0,
+    fillMethod = 4,
+    fillClockwise = true
+}
+function image:new(obj)
+    setmetatable(obj, self)
+    self.__index = self
+
+    local temp = Image(obj.path, Rect(obj.x, obj.y, obj.width, obj.height))
+
+    temp.pivotX, temp.pivotY = obj.pivotX, obj.pivotY
+    temp.anchor = obj.anchor
+    temp.showOnTop = obj.showOnTop
+
+    temp.imageType = obj.imageType
+    temp.fillMethod = obj.fillMethod
+    temp.fillClockwise = obj.fillClockwise
+
+    return temp
+end
+
 --test
 mainPanel = panel:new {}
 mainbtn = button:new {text = "x"}
+img = image:new {}
