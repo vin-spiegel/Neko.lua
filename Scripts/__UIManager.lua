@@ -147,3 +147,33 @@ function image:new(obj)
 
     return temp
 end
+
+--텍스트 객체 기본값
+text =
+    Control:init {
+    text = "기본텍스트",
+    color = Color(255, 255, 255),
+    width = 100,
+    height = 100,
+    pivotX = 0.5,
+    pivotY = 0.5,
+    anchor = 4,
+    textAlign = 0,
+    textSize = 15,
+    showOnTop = true
+}
+function text:new(obj)
+    setmetatable(obj, self)
+    self.__index = self
+
+    local temp = Text(obj.text, Rect(obj.x, obj.y, obj.width, obj.height))
+
+    temp.pivotX, temp.pivotY = obj.pivotX, obj.pivotY
+    temp.anchor = obj.anchor
+    temp.showOnTop = obj.showOnTop
+
+    temp.textAlign = obj.textAlign
+    temp.textSize = obj.textSize
+
+    return temp
+end
