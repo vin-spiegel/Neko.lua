@@ -1,0 +1,1 @@
+local mainPanel = panel:new {}
