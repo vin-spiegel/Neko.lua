@@ -6,6 +6,9 @@ local state = false
 local index = 1
 
 function dialogue:clear()
+    skip = false
+    state = false
+    index = 1
     mainPanel.Destroy()
     mainPanel = nil
     textPanel.Destroy()
@@ -27,10 +30,6 @@ function dialogue:animation(obj)
             state = true
             return
         elseif objText == "" then
-            skip = false
-            state = false
-            index = 1
-            self:clear()
             return
         end
         local res = res or ""
@@ -41,11 +40,39 @@ function dialogue:animation(obj)
             function()
                 self.Iterator(res)
             end,
-            0.07
+            0.05
         )
     end
 
     self.Iterator()
+end
+
+--종료함수
+function dialogue:popDown()
+    if not mainPanel then
+        return
+    end
+    local sum = Point(mainPanel.width / 10, mainPanel.height / 10) --증감량
+    textPanel.text = ""
+    self.Iterator2 = function(res)
+        local res = res or Point(mainPanel.width, mainPanel.height)
+
+        if res.x <= 0 or res.y <= 0 then
+            self:clear()
+            return
+        end
+        res.x = res.x - sum.x
+        res.y = res.y - sum.y
+        mainPanel.width = res.x
+        mainPanel.height = res.y
+        Client.RunLater(
+            function()
+                self.Iterator2(res)
+            end,
+            0.01
+        )
+    end
+    self.Iterator2()
 end
 
 function dialogue:create(req)
@@ -65,7 +92,7 @@ function dialogue:create(req)
     }
     textPanel =
         text:new {
-        text = dialogue[index],
+        -- text = dialogue[index],
         width = mainPanel.width - 40,
         height = mainPanel.height - 40,
         parent = mainPanel
@@ -76,16 +103,23 @@ function dialogue:create(req)
         anchor = 5,
         pivotX = 1,
         pivotY = 0.5,
+        textColor = Color(255, 255, 255),
+        color = Color(0, 0, 0, 0),
         onClick = function()
             --애니메이션 실행중이라면 애니스킵, 이미 스킵되어있다면 스킵 초기화 하고 다음 인덱스 실행
             if state == false then
                 skip = true
                 state = true
-            else
+            elseif state == true then
                 state = false
-                index = index + 1
-                textPanel.text = dialogue[index]
-                self:animation(textPanel.text)
+                if dialogue[index + 1] then
+                    index = index + 1
+                    textPanel.text = dialogue[index]
+                    self:animation(textPanel.text)
+                else
+                    self:popDown()
+                    return
+                end
             end
         end,
         parent = mainPanel
@@ -94,10 +128,50 @@ function dialogue:create(req)
     return mainPanel, textPanel
 end
 
+--팝업
+function dialogue:popUp(action, text)
+    if not mainPanel then
+        return
+    end
+    local startText = text
+    local origin = Point(mainPanel.width, mainPanel.height)
+    local sum = Point(mainPanel.width / 10, mainPanel.height / 10) --증감량
+
+    Iterator = function(res)
+        res = res or Point(0, 0)
+
+        if res.x >= origin.x or res.y >= origin.y then
+            mainPanel.width = origin.x
+            mainPanel.height = origin.y
+            Client.RunLater(
+                function()
+                    textPanel.text = startText
+                    dialogue:animation(textPanel.text)
+                end,
+                0.2
+            )
+            return
+        end
+
+        res.x = res.x + sum.x
+        res.y = res.y + sum.y
+        mainPanel.width = res.x
+        mainPanel.height = res.y
+        Client.RunLater(
+            function()
+                Iterator(res)
+            end,
+            0.01
+        )
+    end
+    Iterator()
+end
+
 --전역함수
 function Dialogue(text)
     local mainPanel, textPanel = dialogue:create(text)
-    dialogue:animation(textPanel.text)
+    dialogue:popUp(mainPanel, text[1])
+    -- dialogue:animation(textPanel.text)
 end
 
 --테스트코드

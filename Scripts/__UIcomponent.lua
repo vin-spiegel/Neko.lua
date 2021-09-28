@@ -12,7 +12,8 @@
         pivotX = 0.5,
         pivotY = 0.5,
         anchor = 4,
-        showOnTop = false
+        showOnTop = false,
+        visible = true
     }
 
     --자식 클래스 생성
@@ -84,7 +85,7 @@
     text =
         Control:init {
         type = "Text",
-        text = "기본텍스트",
+        text = "",
         color = Color(255, 255, 255),
         width = 100,
         height = 100,
