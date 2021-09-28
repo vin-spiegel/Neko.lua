@@ -86,7 +86,7 @@ text =
     showOnTop = true
 }
 
---타입 지정 함수 모음
+--타입 지정
 Control.setType = {
     Panel = function(obj)
         local temp = Panel()
