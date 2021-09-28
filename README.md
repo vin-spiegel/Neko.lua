@@ -9,13 +9,13 @@
 #### 구현된 함수들 💬
 - - -
 
-##### Server Scripts
+#### Server Scripts
  
   * `callbacks`
     * callbacks.onEquipItem:Add() - 아이템 장착 콜백
     * callbacks.offEquipItem:Add() - 아이템 장착 해제 콜백
 
-##### Client Scripts
+#### Client Scripts
 
   * `Control` - 컨트롤 하위 객체들은 다음과 같이 사용 가능합니다.
     * panel:new{}
