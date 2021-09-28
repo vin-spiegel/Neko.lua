@@ -37,17 +37,17 @@
   ```lua
   local myBtn = 
     button:new {
-    text="닫기버튼"
+    text = "닫기버튼"
   }
 
   local myImg = 
     image:new {
-    path="Icon/001.png"
+    path = "Icon/001.png"
   }
 
   local myText = 
     text:new {
-    text="텍스트를 입력해주세요."
+    text = "텍스트를 입력해주세요."
   }
   ```
 * `button` 객체의 `onClick` 이벤트를 프로퍼티로 첨부하여 생성할 수 있습니다.
@@ -64,7 +64,7 @@
   local mainPanel = panel:new {}
   local subPanel = 
     panel:new {
-    parent=mainPanel
+    parent = mainPanel
   }
   ```
 * `onEquipItem`과 `offEquipItem`에 들어가는 인자는 함수입니다.
