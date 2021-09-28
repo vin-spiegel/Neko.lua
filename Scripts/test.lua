@@ -1,3 +1,7 @@
-local a = panel:new {}
-print(tostring(a))
--- a.color = Color(0, 0, 0, 100)
+local testPanel = panel:new {}
+local testButton =
+    button:new {
+    parent = testPanel
+}
+print("a의 children : ", testPanel.children[1])
+print(testButton.parent)

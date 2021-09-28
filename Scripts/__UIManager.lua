@@ -1,3 +1,5 @@
+--UI생성 컴포넌트 #__UIcoponent.lua
+
 --컨트롤 클래스 : 멤버변수, 멤버함수 선언
 Control = {
     x = 0,
@@ -9,6 +11,7 @@ Control = {
     anchor = 4,
     showOnTop = false
 }
+
 --자식 클래스 생성
 function Control:init(obj)
     setmetatable(obj, self)
@@ -24,6 +27,7 @@ panel =
     height = Client.height * 0.75,
     color = Color(0, 0, 0, 150)
 }
+
 --그리드패널 기본값
 gridPanel =
     Control:init {
@@ -151,5 +155,10 @@ function Control:new(obj)
     inst.pivotY = obj.pivotY
     inst.anchor = obj.anchor
     inst.showOnTop = obj.showOnTop
+
+    --객체 부모연결
+    if obj.parent then
+        obj.parent.AddChild(inst)
+    end
     return inst
 end
