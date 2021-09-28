@@ -1,8 +1,3 @@
---[[
-    이름 : 아이템 장착, 해제 콜백
-    설명 : 해당 스크립트로 일어난 오류에 대해서 책임을 지지 않습니다. 본 스크립트는 2차 판매를 제외하고 자유롭게 사용 및 수정이 가능합니다. 
-    제작자 : 스피겔
---]]
 callbacks = {}
 callbacks.__index = callbacks
 
@@ -73,15 +68,15 @@ equipItems:funcs()
 --[[
     테스트
 --]]
--- --1번 테스트 함수
--- function test01(unit, item, slot)
---     print("아이템 장착 : ", unit, item, "슬롯 번호 : " .. slot, "아이템 id : " .. item.id)
--- end
--- callbacks.onEquipItem:Add(test01)
+--1번 테스트 함수
+function test01(unit, item, slot)
+    print("아이템 장착 : ", unit, item, "슬롯 번호 : " .. slot, "아이템 id : " .. item.id)
+end
+callbacks.onEquipItem:Add(test01)
 
--- --2번 테스트 함수
--- callbacks.offEquipItem:Add(
---     function(unit, item, slot)
---         print("아이템 해제 : ", unit, item, "슬롯 번호 : " .. slot, "아이템 id : " .. item.id)
---     end
--- )
+--2번 테스트 함수
+callbacks.offEquipItem:Add(
+    function(unit, item, slot)
+        print("아이템 해제 : ", unit, item, "슬롯 번호 : " .. slot, "아이템 id : " .. item.id)
+    end
+)
