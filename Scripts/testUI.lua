@@ -26,6 +26,17 @@ function foo()
         showOnTop = true
     }
     mainPanel.AddChild(
+        button:new {
+            text = "skip",
+            anchor = 2,
+            pivotX = 1,
+            pivotY = 1,
+            onClick = function()
+                print("skip버튼 클릭")
+            end
+        }
+    )
+    mainPanel.AddChild(
         text:new {
             text = "괴상한 소문.\nA마을을 넘어 B마을로 건너가는 산길에는 도깨비가 있다고 한다..\n주위를 탐방하여 소문의 근원을 확인하자.",
             width = mainPanel.width - 40,
