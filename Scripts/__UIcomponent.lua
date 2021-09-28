@@ -122,7 +122,6 @@
             temp.textSize = obj.textSize
             temp.textColor = obj.textColor
             if obj.onClick then
-                print("Added onClick function")
                 temp.onClick.Add(obj.onClick)
             end
             return temp
