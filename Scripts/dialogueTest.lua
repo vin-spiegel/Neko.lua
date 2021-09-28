@@ -1,36 +1,60 @@
+local dialogue = {}
+local mainPanel
+local textPanel
 local skip = false
+local state = false
+local index = 1
 
-local function textAnimation(obj)
-    if tostring(obj) ~= "Game.Scripts.ScriptText" then
-        print("Error : 텍스트 객체가 아닙니다.")
+function dialogue:clear()
+    mainPanel.Destroy()
+    mainPanel = nil
+    textPanel.Destroy()
+    textPanel = nil
+end
+
+function dialogue:animation(obj)
+    if not obj or type(obj) ~= "string" then
+        print("Error: String 타입이 아닙니다.")
+        print(obj, type(obj))
         return
     end
+    local objText = obj
 
-    local obj, objText = obj, obj.text
-
-    Iterator = function(res)
+    self.Iterator = function(res)
         if skip or objText == res then
-            obj.text = objText
+            textPanel.text = objText
             skip = false
+            state = true
+            return
+        elseif objText == "" then
+            skip = false
+            state = false
+            index = 1
+            self:clear()
             return
         end
         local res = res or ""
         res = string.sub(objText, 1, #res + 2)
-        obj.text = res
+        textPanel.text = res
 
         Client.RunLater(
             function()
-                Iterator(res)
+                self.Iterator(res)
             end,
-            0.1
+            0.07
         )
     end
 
-    Iterator()
+    self.Iterator()
 end
 
-function dialogue(textObj)
-    local mainPanel =
+function dialogue:create(req)
+    local dialogue = req
+    if mainPanel then
+        return
+    end
+
+    mainPanel =
         panel:new {
         width = Client.width * 0.8,
         height = Client.height * 0.3,
@@ -39,27 +63,53 @@ function dialogue(textObj)
         color = Color(0, 0, 0, 180),
         showOnTop = true
     }
-
-    local skipBtn =
-        button:new {
-        text = "skip",
-        anchor = 2,
-        pivotX = 1,
-        pivotY = 1,
-        onClick = function()
-            print("skip버튼 클릭")
-            skip = true
-        end,
-        parent = mainPanel
-    }
-
-    local contentText =
+    textPanel =
         text:new {
-        text = "괴상한 소문.\nA마을을 넘어 B마을로 건너가는 산길에는 도깨비가 있다고 한다..\n주위를 탐방하여 소문의 근원을 확인하자.",
+        text = dialogue[index],
         width = mainPanel.width - 40,
         height = mainPanel.height - 40,
         parent = mainPanel
     }
+    local skipBtn =
+        button:new {
+        text = ">>",
+        anchor = 5,
+        pivotX = 1,
+        pivotY = 0.5,
+        onClick = function()
+            --애니메이션 실행중이라면 애니스킵, 이미 스킵되어있다면 스킵 초기화 하고 다음 인덱스 실행
+            if state == false then
+                skip = true
+                state = true
+            else
+                state = false
+                index = index + 1
+                textPanel.text = dialogue[index]
+                self:animation(textPanel.text)
+            end
+        end,
+        parent = mainPanel
+    }
 
-    textAnimation(contentText)
+    return mainPanel, textPanel
 end
+
+--전역함수
+function Dialogue(text)
+    local mainPanel, textPanel = dialogue:create(text)
+    dialogue:animation(textPanel.text)
+end
+
+--테스트코드
+Client.RunLater(
+    function()
+        Dialogue {
+            portrait = false,
+            "현재 파이널 시티 주위를 떠도는 괴상한 소문이 있다.",
+            "A마을을 넘어 B마을로 건너가는 산길에는 도깨비가 있다고 한다..",
+            "주위를 탐방하여 소문의 근원을 확인하자.",
+            "어쩌면 진귀한 아이템을 들고있을지도?"
+        }
+    end,
+    2
+)
