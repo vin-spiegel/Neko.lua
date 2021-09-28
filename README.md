@@ -7,6 +7,7 @@
 * 네코랜드 개발환경에 조금이라도 도움이 될까 생각하여 조금씩 만들게 되었습니다.
 
 #### 구현된 함수들
+----
 
 ##### `Server Scripts`
  
@@ -28,16 +29,22 @@
 
 * `Scripts`폴더와 `ServerScripts`폴더의 스크립트 파일들을 다운로드 받으셔서 파일이 폴더의 가장 위로 정렬되게 해주세요.
 
-  * Neko.lua는 전역 메소드입니다. 일반적인 모듈과 다르게 require를 지원하지 않습니다.
-  * button,image,text 메소드는 프로퍼티가 재정의 되어 있습니다.
-    ```local myBtn = button:new{text="닫기버튼"}
-    local myImg = image:new{path="Icon/001.png"}
-    local myText = text:new{text="텍스트를 입력해주세요."}```
-  * button 객체의 onClick이벤트를 프로퍼티로 첨부하여 생성할 수 있습니다.
-    ```local myBtn = button:new{onClick = function() print("클릭하였습니다.") end}```
-  * 모든 Control 하위 객체들은 선언과 동시에 부모 객체를 연결할 수 있습니다.
-    ```local mainPanel = panel:new{}
-    local subPanel = panel:new{parent=mainPanel}```
+* Neko.lua는 전역 메소드입니다. 일반적인 모듈과 다르게 require를 지원하지 않습니다.
+* button,image,text 메소드는 프로퍼티가 재정의 되어 있습니다.
+  ```
+  local myBtn = button:new{text="닫기버튼"}
+  local myImg = image:new{path="Icon/001.png"}
+  local myText = text:new{text="텍스트를 입력해주세요."}
+  ```
+* button 객체의 onClick이벤트를 프로퍼티로 첨부하여 생성할 수 있습니다.
+```
+local myBtn = button:new{onClick = function() print("클릭하였습니다.") end}
+```
+* 모든 Control 하위 객체들은 선언과 동시에 부모 객체를 연결할 수 있습니다.
+  ```
+  local mainPanel = panel:new{}
+  local subPanel = panel:new{parent=mainPanel}
+  ```
   
 
 ### 개발자
@@ -47,7 +54,7 @@
 
 ### 라이센스
 ----
-MIT LICENSE Copyright (c) 2021 Spiegel
+MIT LICENSE Copyright (c) 2021 `스피겔(Spiegel)`
 
 사용 조건
 - 라이센스 및 저작권을 고지할것
