@@ -50,7 +50,7 @@
     text="텍스트를 입력해주세요."
   }
   ```
-* button 객체의 onClick이벤트를 프로퍼티로 첨부하여 생성할 수 있습니다.
+* `button` 객체의 `onClick` 이벤트를 프로퍼티로 첨부하여 생성할 수 있습니다.
   ```lua
   local myBtn = 
     button:new {
@@ -59,7 +59,7 @@
     end
   }
   ```
-* 모든 Control 하위 객체들은 선언과 동시에 부모 객체를 연결할 수 있습니다.
+* 모든 `Control` 하위 객체들은 선언과 동시에 부모 객체를 연결할 수 있습니다.
   ```lua
   local mainPanel = panel:new {}
   local subPanel = 
@@ -67,7 +67,7 @@
     parent=mainPanel
   }
   ```
-* onEquipItem과 offEquipItem에 들어가는 인자는 함수입니다.
+* `onEquipItem`과 `offEquipItem`에 들어가는 인자는 함수입니다.
   ```lua
   --onEquipItem에 함수 추가하기
   function myCallback(unit,item,slot)
