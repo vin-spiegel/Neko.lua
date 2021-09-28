@@ -31,7 +31,7 @@
 * `Scripts`폴더와 `ServerScripts`폴더의 스크립트 파일들을 다운로드 받으셔서 파일이 폴더의 가장 위로 정렬되게 해주세요.
 
 * Neko.lua는 전역 메소드입니다. 일반적인 모듈과 다르게 require를 지원하지 않습니다.
-* button,image,text 메소드는 프로퍼티가 재정의 되어 있습니다.
+* `button` , `image` , `text` 메소드는 프로퍼티가 재정의 되어 있습니다.
   ```lua
   local myBtn = 
     button:new {
