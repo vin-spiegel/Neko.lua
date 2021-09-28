@@ -5,6 +5,43 @@ local skip = false
 local state = false
 local index = 1
 
+local Animation = {}
+function Animation:typing(obj)
+    print("타이핑 애니메이션")
+end
+function Animation:popUp(obj, t)
+    local obj = obj
+    local origin = Point(obj.width, obj.height)
+    local sum = Point(obj.width / 10, obj.height / 10) --증감량
+    local t = t * 0.1
+
+    Iterator = function(res)
+        res = res or Point(0, 0)
+
+        if res.x >= origin.x or res.y >= origin.y then
+            obj.width = origin.x
+            obj.height = origin.y
+            return
+        end
+
+        res.x = res.x + sum.x
+        res.y = res.y + sum.y
+        obj.width = res.x
+        obj.height = res.y
+        Client.RunLater(
+            function()
+                Iterator(res)
+            end,
+            t
+        )
+    end
+    Iterator()
+end
+function Animation:popDown(obj, t)
+    local obj = obj
+    obj.DOScale(Point(0, 0), t)
+end
+
 function dialogue:clear()
     skip = false
     state = false
@@ -170,20 +207,40 @@ end
 --전역함수
 function Dialogue(text)
     local mainPanel, textPanel = dialogue:create(text)
-    dialogue:popUp(mainPanel, text[1])
+    Animation:popUp(mainPanel, 0.1)
+    RunLater {
+        Animation.typing,
+        textPanel,
+        text,
+        time = 0.1
+    }
+    --대사 애니메이션 시작
+    -- dialogue:popUp(mainPanel, text[1])
     -- dialogue:animation(textPanel.text)
 end
 
 --테스트코드
-Client.RunLater(
-    function()
-        Dialogue {
-            portrait = false,
-            "현재 파이널 시티 주위를 떠도는 괴상한 소문이 있다.",
-            "A마을을 넘어 B마을로 건너가는 산길에는 도깨비가 있다고 한다..",
-            "주위를 탐방하여 소문의 근원을 확인하자.",
-            "어쩌면 진귀한 아이템을 들고있을지도?"
-        }
-    end,
-    2
-)
+RunLater {
+    Dialogue,
+    {
+        portrait = false,
+        "현재 파이널 시티 주위를 떠도는 괴상한 소문이 있다.",
+        "A마을을 넘어 B마을로 건너가는 산길에는 도깨비가 있다고 한다..",
+        "주위를 탐방하여 소문의 근원을 확인하자.",
+        "어쩌면 진귀한 아이템을 들고있을지도?"
+    },
+    time = 3
+}
+
+-- Client.RunLater(
+--     function()
+--         Dialogue {
+--             portrait = false,
+--             "현재 파이널 시티 주위를 떠도는 괴상한 소문이 있다.",
+--             "A마을을 넘어 B마을로 건너가는 산길에는 도깨비가 있다고 한다..",
+--             "주위를 탐방하여 소문의 근원을 확인하자.",
+--             "어쩌면 진귀한 아이템을 들고있을지도?"
+--         }
+--     end,
+--     2
+-- )
