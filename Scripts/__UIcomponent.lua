@@ -1,6 +1,6 @@
 --[[
-    ##UI생성 컴포넌트##
-    __UIcomponent.lua##
+    ##UI생성 컴포넌트
+    ##__UIcomponent.lua
 --]]
 (function()
     --컨트롤 클래스 : 멤버변수, 멤버함수 선언
