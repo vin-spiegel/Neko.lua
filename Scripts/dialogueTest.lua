@@ -1,6 +1,6 @@
 local skip = false
 
-function textAnimation(obj)
+local function textAnimation(obj)
     if tostring(obj) ~= "Game.Scripts.ScriptText" then
         print("Error : 텍스트 객체가 아닙니다.")
         return
