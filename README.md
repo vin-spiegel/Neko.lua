@@ -33,20 +33,54 @@
 * Neko.lua는 전역 메소드입니다. 일반적인 모듈과 다르게 require를 지원하지 않습니다.
 * button,image,text 메소드는 프로퍼티가 재정의 되어 있습니다.
   ```lua
-  local myBtn = button:new{text="닫기버튼"}
-  local myImg = image:new{path="Icon/001.png"}
-  local myText = text:new{text="텍스트를 입력해주세요."}
+  local myBtn = 
+    button:new {
+    text="닫기버튼"
+  }
+
+  local myImg = 
+    image:new {
+    path="Icon/001.png"
+  }
+
+  local myText = 
+    text:new {
+    text="텍스트를 입력해주세요."
+  }
   ```
 * button 객체의 onClick이벤트를 프로퍼티로 첨부하여 생성할 수 있습니다.
   ```lua
-  local myBtn = button:new{onClick = function() print("클릭하였습니다.") end}
+  local myBtn = 
+    button:new {
+    onClick = function() 
+      print("클릭하였습니다.") 
+    end
+  }
   ```
 * 모든 Control 하위 객체들은 선언과 동시에 부모 객체를 연결할 수 있습니다.
   ```lua
-  local mainPanel = panel:new{}
-  local subPanel = panel:new{parent=mainPanel}
+  local mainPanel = panel:new {}
+  local subPanel = 
+    panel:new {
+    parent=mainPanel
+  }
   ```
-  
+* onEquipItem과 offEquipItem에 들어가는 인자는 함수입니다.
+  ```lua
+  --onEquipItem에 함수 추가하기
+  function myCallback(unit,item,slot)
+    print(unit,item,slot)
+  end
+
+  callbacks.onEquipItem:Add(myCallback)
+
+  --offEquipItem 함수 추가 예제
+  callbacks.offEquipItem:Add(
+     function(unit, item, slot)
+         print("아이템 해제 : ", unit, item, "슬롯 번호 : " .. slot, "아이템 id : " .. item.id)
+     end
+  )
+  ```
 
 ### 개발자
 - - -
