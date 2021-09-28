@@ -16,55 +16,6 @@ function Control:init(obj)
     return obj
 end
 
---타입 지정 함수 모음
-Control.setType = {
-    Panel = function(obj)
-        local temp = Panel()
-        temp.color = obj.color
-        return temp
-    end,
-    GridPanel = function(obj)
-        local temp = GridPanel()
-        temp.cellSize = obj.cellSize
-        temp.horizontal = obj.horizontal
-        temp.vertical = obj.vertical
-        return temp
-    end,
-    ScrollPanel = function(obj)
-        local temp = ScrollPanel()
-        temp.masked = obj.masked
-        temp.horizontal = obj.horizontal
-        temp.vertical = obj.vertical
-        temp.showHorizontalScrollbar = obj.showHorizontalScrollbar
-        temp.showVerticalScrollbar = obj.showVerticalScrollbar
-        return temp
-    end,
-    Button = function(obj)
-        local temp = Button(obj.text)
-        temp.color = obj.color
-        temp.textSize = obj.textSize
-        temp.textColor = obj.textColor
-        if obj.onClick then
-            print("Added onClick function")
-            temp.onClick.Add(obj.onClick)
-        end
-        return temp
-    end,
-    Image = function(obj)
-        local temp = Image(obj.path)
-        temp.imageType = obj.imageType
-        temp.fillMethod = obj.fillMethod
-        temp.fillClockwise = obj.fillClockwise
-        return temp
-    end,
-    Text = function(obj)
-        local temp = Text(obj.text)
-        temp.textAlign = obj.textAlign
-        temp.textSize = obj.textSize
-        return temp
-    end
-}
-
 --패널 기본값 정의
 panel =
     Control:init {
@@ -133,6 +84,55 @@ text =
     textAlign = 0,
     textSize = 15,
     showOnTop = true
+}
+
+--타입 지정 함수 모음
+Control.setType = {
+    Panel = function(obj)
+        local temp = Panel()
+        temp.color = obj.color
+        return temp
+    end,
+    GridPanel = function(obj)
+        local temp = GridPanel()
+        temp.cellSize = obj.cellSize
+        temp.horizontal = obj.horizontal
+        temp.vertical = obj.vertical
+        return temp
+    end,
+    ScrollPanel = function(obj)
+        local temp = ScrollPanel()
+        temp.masked = obj.masked
+        temp.horizontal = obj.horizontal
+        temp.vertical = obj.vertical
+        temp.showHorizontalScrollbar = obj.showHorizontalScrollbar
+        temp.showVerticalScrollbar = obj.showVerticalScrollbar
+        return temp
+    end,
+    Button = function(obj)
+        local temp = Button(obj.text)
+        temp.color = obj.color
+        temp.textSize = obj.textSize
+        temp.textColor = obj.textColor
+        if obj.onClick then
+            print("Added onClick function")
+            temp.onClick.Add(obj.onClick)
+        end
+        return temp
+    end,
+    Image = function(obj)
+        local temp = Image(obj.path)
+        temp.imageType = obj.imageType
+        temp.fillMethod = obj.fillMethod
+        temp.fillClockwise = obj.fillClockwise
+        return temp
+    end,
+    Text = function(obj)
+        local temp = Text(obj.text)
+        temp.textAlign = obj.textAlign
+        temp.textSize = obj.textSize
+        return temp
+    end
 }
 
 --객체 생성 멤버함수
