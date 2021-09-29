@@ -26,6 +26,9 @@
     * button:new{}
     * image:new{}
     * text:new{}
+    
+    * Animation:popUp()
+    * Animation:popDown()
   * `Extensions`
     * RunLater{}
 
