@@ -65,8 +65,11 @@
 
 * `callbacks.onEquipItem`과 `callbacks.offEquipItem`은 아이템을 장착하고 벗을때 호출되는 이벤트입니다.
 * 호출될 함수의 인자 형식 : `function(ScriptUnit unit, Titem item, number slot)`
+
   [1] unit : 이벤트가 일어난 유닛 객체(userdata)
+
   [2] item : 장착 or 해제한 아이템 객체(userdata)
+  
   [3] slot : 장착 or 해제한 아이템이 있던 캐릭터 슬롯 번호(number)
   ```lua
   --호출될 함수의 인자형식
