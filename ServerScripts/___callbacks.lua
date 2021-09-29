@@ -1,16 +1,6 @@
 callbacks = {}
 callbacks.__index = callbacks
 
-function callbacks:Add(_func)
-    table.insert(self.funcs, _func)
-end
-
-function callbacks:Run(...)
-    for _, func in pairs(self.funcs) do
-        func(...)
-    end
-end
-
 callbacks.onEquipItem = {
     funcs = {}
 }
@@ -64,6 +54,16 @@ function equipItems:funcs()
     Server.onRefreshStats.Add(self.init)
 end
 equipItems:funcs()
+
+function callbacks:Add(_func)
+    table.insert(self.funcs, _func)
+end
+
+function callbacks:Run(...)
+    for _, func in pairs(self.funcs) do
+        func(...)
+    end
+end
 
 --[[
     테스트
