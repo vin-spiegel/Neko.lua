@@ -1,7 +1,7 @@
 --##UI생성 컴포넌트
 
 (function()
-    --컨트롤 클래스 : 멤버변수, 멤버함수 선언
+    --컨트롤 클래스
     local Control = {
         x = 0,
         y = 0,
@@ -23,6 +23,7 @@
         -- BottomRight = 8
         showOnTop = false,
         visible = true
+        -- enable = true
     }
 
     --자식 클래스 생성 메소드
@@ -144,14 +145,15 @@
             Control:class {
             type = "Text",
             text = "",
-            color = Color(255, 255, 255),
             textAlign = 0,
-            textSize = 15
+            textSize = 15,
+            color = Color(255, 255, 255)
         }
         self.Text = function(obj)
             local temp = Text(obj.text)
             temp.textAlign = obj.textAlign
             temp.textSize = obj.textSize
+            temp.color = obj.color
             return temp
         end
     end
@@ -176,6 +178,8 @@
         end
         inst.anchor = obj.anchor
         inst.showOnTop = obj.showOnTop
+        inst.visible = obj.visible
+        -- inst.enable = obj.enable
 
         --객체 부모연결
         if obj.parent then

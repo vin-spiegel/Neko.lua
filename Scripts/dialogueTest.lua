@@ -1,177 +1,114 @@
-local dialogue = {}
-local mainPanel
-local textPanel
 local skip = false
 local state = false
+local dialogue = {}
 local index = 1
 
-function dialogue:clear()
-    skip = false
-    state = false
-    index = 1
-    mainPanel.Destroy()
-    mainPanel = nil
-    textPanel.Destroy()
-    textPanel = nil
-end
-
-function dialogue:animation(obj)
-    if not obj or type(obj) ~= "string" then
-        print("Error: String 타입이 아닙니다.")
-        print(obj, type(obj))
-        return
-    end
-    local objText = obj
+function dialogue:typing(obj, texts, t)
+    obj.visible = true
+    local originText = texts
 
     self.Iterator = function(res)
-        if skip or objText == res then
-            textPanel.text = objText
+        if skip or originText == res then
+            --스킵 or 끝났을떄
+            obj.text = originText
             skip = false
             state = true
             return
-        elseif objText == "" then
+        elseif originText == "" then
             return
         end
         local res = res or ""
-        res = string.sub(objText, 1, #res + 2)
-        textPanel.text = res
+        res = string.sub(originText, 1, #res + 2)
+
+        --글자반영
+        obj.text = res
 
         Client.RunLater(
             function()
                 self.Iterator(res)
             end,
-            0.05
+            t * 0.1
         )
     end
 
     self.Iterator()
 end
 
---종료함수
-function dialogue:popDown()
-    if not mainPanel then
-        return
-    end
-    local sum = Point(mainPanel.width / 10, mainPanel.height / 10) --증감량
-    textPanel.text = ""
-    self.Iterator2 = function(res)
-        local res = res or Point(mainPanel.width, mainPanel.height)
-
-        if res.x <= 0 or res.y <= 0 then
-            self:clear()
-            return
-        end
-        res.x = res.x - sum.x
-        res.y = res.y - sum.y
-        mainPanel.width = res.x
-        mainPanel.height = res.y
-        Client.RunLater(
-            function()
-                self.Iterator2(res)
-            end,
-            0.01
-        )
-    end
-    self.Iterator2()
+function dialogue:clear(obj)
 end
 
-function dialogue:create(req)
-    local dialogue = req
+local mainPanel
+local textPanel
+function dialogue:create(texts)
     if mainPanel then
-        return
+        --초기화
+        textPanel.text = ""
+        skip = false
+        state = false
+        index = 1
+        return mainPanel, textPanel
     end
 
     mainPanel =
         panel:new {
-        width = Client.width * 0.8,
-        height = Client.height * 0.3,
+        rect = Rect(0, 0, Client.width * 0.8, Client.height * 0.3),
         pivotY = 1,
         anchor = 7,
         color = Color(0, 0, 0, 180),
         showOnTop = true
     }
+
     textPanel =
         text:new {
-        -- text = dialogue[index],
-        width = mainPanel.width - 40,
-        height = mainPanel.height - 40,
-        parent = mainPanel
+        rect = Rect(0, 0, mainPanel.width - 40, mainPanel.height - 40),
+        parent = mainPanel,
+        visible = false
     }
+
     local skipBtn =
         button:new {
         text = ">>",
         anchor = 5,
-        pivotX = 1,
-        pivotY = 0.5,
+        pivot = Point(1, 0.5),
         textColor = Color(255, 255, 255),
         color = Color(0, 0, 0, 0),
-        onClick = function()
+        onClick = onClickEvent,
+        parent = mainPanel
+    }
+
+    skipBtn.onClick.Add(
+        function()
             --애니메이션 실행중이라면 애니스킵, 이미 스킵되어있다면 스킵 초기화 하고 다음 인덱스 실행
             if state == false then
                 skip = true
                 state = true
             elseif state == true then
                 state = false
-                if dialogue[index + 1] then
+                if texts[index + 1] then
                     index = index + 1
-                    textPanel.text = dialogue[index]
-                    self:animation(textPanel.text)
+                    dialogue:typing(textPanel, texts[index], 0.2)
                 else
-                    self:popDown()
+                    -- self:popDown()
+                    Animation:popDown(mainPanel, 0.1)
                     return
                 end
             end
-        end,
-        parent = mainPanel
-    }
+        end
+    )
 
     return mainPanel, textPanel
 end
 
---팝업
-function dialogue:popUp(action, text)
-    if not mainPanel then
-        return
-    end
-    local startText = text
-    local origin = Point(mainPanel.width, mainPanel.height)
-    local sum = Point(mainPanel.width / 10, mainPanel.height / 10) --증감량
-
-    Iterator = function(res)
-        res = res or Point(0, 0)
-
-        if res.x >= origin.x or res.y >= origin.y then
-            mainPanel.width = origin.x
-            mainPanel.height = origin.y
-            Client.RunLater(
-                function()
-                    textPanel.text = startText
-                    dialogue:animation(textPanel.text)
-                end,
-                0.2
-            )
-            return
-        end
-
-        res.x = res.x + sum.x
-        res.y = res.y + sum.y
-        mainPanel.width = res.x
-        mainPanel.height = res.y
-        Client.RunLater(
-            function()
-                Iterator(res)
-            end,
-            0.01
-        )
-    end
-    Iterator()
-end
-
---전역함수
-function Dialogue(text)
-    local mainPanel, textPanel = dialogue:create(text)
-    dialogue:popUp(mainPanel, text[1])
-    -- dialogue:animation(textPanel.text)
+--대화 호출 함수 --global
+function Dialogue(texts)
+    local mainPanel, textPanel = dialogue:create(texts)
+    Animation:popUp(mainPanel, 0.1)
+    Client.RunLater(
+        function()
+            dialogue:typing(textPanel, texts[1], 0.55)
+        end,
+        0.4
+    )
 end
 
 --테스트코드
@@ -185,5 +122,5 @@ Client.RunLater(
             "어쩌면 진귀한 아이템을 들고있을지도?"
         }
     end,
-    4
+    2
 )
