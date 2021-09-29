@@ -46,12 +46,15 @@ function Dialogue(texts)
         dialogue:create(texts)
     end
 
+    --팝업 띄우기
     Animation:popUp(mainPanel, 0.1)
+
+    --타이핑 애니메이션
     Client.RunLater(
         function()
-            Animation:typing(textPanel, texts[1], 0.55)
+            Animation:typing(textPanel, texts[1], 0.2)
         end,
-        0.4
+        0.3
     )
 end
 
