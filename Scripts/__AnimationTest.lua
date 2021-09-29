@@ -6,10 +6,10 @@ function Animation:popUp(obj, t)
     obj.visible = true
     --자식 객체 비활성화
     if obj.children and #obj.children > 0 then
-        print("----popUP----")
+        -- print("----popUP----")
         for i = 1, #obj.children do
             obj.children[i].visible = false
-            print(obj.children[i], ":", obj.children[i].visible)
+            -- print(obj.children[i], ":", obj.children[i].visible)
         end
     end
 
@@ -48,10 +48,10 @@ function Animation:popDown(obj, t)
 
     --자식 객체 비활성화
     if obj.children and #obj.children > 0 then
-        print("----popDown----")
+        -- print("----popDown----")
         for i = 1, #obj.children do
             obj.children[i].visible = false
-            print(obj.children[i], ":", obj.children[i].visible)
+            -- print(obj.children[i], ":", obj.children[i].visible)
         end
     end
 
@@ -78,4 +78,57 @@ function Animation:popDown(obj, t)
         )
     end
     self.iteratorPopDown()
+end
+
+local skip = false
+local endTyping = false
+local index = 1
+function Animation:reset()
+    skip = false
+    endTyping = false
+    index = 1
+end
+function Animation:typing(obj, texts, t)
+    obj.visible = true
+    local originText = texts
+
+    self.Iterator = function(res)
+        if skip or originText == res or originText == "" then
+            --스킵 or 끝났을떄
+            obj.text = originText
+            endTyping = true
+            return
+        end
+        local res = res or ""
+        res = string.sub(originText, 1, #res + 2)
+
+        --글자반영
+        obj.text = res
+
+        Client.RunLater(
+            function()
+                self.Iterator(res)
+            end,
+            t * 0.1
+        )
+    end
+    self.Iterator()
+end
+
+function Animation:typingOnClick(mainPanel, textPanel, texts)
+    --애니메이션 실행중이라면 애니스킵, 이미 스킵되어있다면 스킵 초기화 하고 다음 인덱스 실행
+    if endTyping == false then
+        skip = true
+    elseif endTyping == true then
+        if texts[index + 1] then
+            skip = false
+            index = index + 1
+            Animation:typing(textPanel, texts[index], 0.2)
+        else
+            Animation:popDown(mainPanel, 0.1)
+            return
+        end
+        skip = false
+        endTyping = false
+    end
 end
