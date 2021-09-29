@@ -14,6 +14,8 @@
   * `callbacks`
     * callbacks.onEquipItem:Add() - 아이템 장착 콜백
     * callbacks.offEquipItem:Add() - 아이템 장착 해제 콜백
+  * `Extensions`
+    * RunLater{}
 
 #### Client Scripts
 
@@ -24,7 +26,8 @@
     * button:new{}
     * image:new{}
     * text:new{}
-
+  * `Extensions`
+    * RunLater{}
 
 #### 사용방법 💬
 - - -
