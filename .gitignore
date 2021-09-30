@@ -1,0 +1,16 @@
+#네코랜드 설정 폴더
+.vscode/
+Animations/
+BGM/
+BGS/
+Characters/
+Icons/
+ME/
+Maps/
+Pictures/
+SE/
+Tilesets/
+Windowskins/
+db.sqlite
+Game.neko
+*.ini
