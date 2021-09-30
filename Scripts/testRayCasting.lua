@@ -131,5 +131,5 @@ function controller:create()
         parent = mainPanel
     }
 end
-controller:create()
-Client.RunLater(getField, 2)
+-- controller:create()
+-- Client.RunLater(getField, 2)
