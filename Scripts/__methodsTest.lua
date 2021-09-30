@@ -23,15 +23,14 @@ RunLater = function(obj)
 end
 
 --test
-RunLater {
-    function(a, b, c)
-        print(a, b, c)
-    end,
-    "a",
-    "b",
-    "c",
-    time = 2
-}
+-- RunLater {
+--     function(a, b, c)
+--     end,
+--     "a",
+--     "b",
+--     "c",
+--     time = 2
+-- }
 
 --wait 함수
 function myCoroutine(t)
