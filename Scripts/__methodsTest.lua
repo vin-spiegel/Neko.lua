@@ -22,12 +22,3 @@ RunLater = function(obj)
 end
 
 --test
-RunLater {
-    function(a, b, c)
-        print(a, b, c)
-    end,
-    "a",
-    "b",
-    "c",
-    time = 2
-}

@@ -35,7 +35,26 @@ end
 
 --객체 생성및 최초값 설정
 function Control:set(obj)
-    --최초 생성
+    --세팅 함수
+    local setting = function(object)
+        local userdata = object[1]
+        local addOn = {
+            xy = function(v)
+                userdata.x = v.x
+                userdata.y = v.y
+                print(userdata.x, userdata.y)
+            end
+        }
+        for key, v in pairs(obj) do
+            if addOn[key] then
+                addOn[key](v)
+            elseif key ~= 1 then
+                userdata[key] = v
+            end
+        end
+    end
+
+    --userdata객체가 없을때 새로 생성
     if not self[1] then
         --들어온 테이블에 Control 클래스 연결
         setmetatable(obj, self)
@@ -53,15 +72,13 @@ function Control:set(obj)
         inst.visible = self.visible
 
         table.insert(obj, inst)
+        setting(obj)
+        -- print("생성")
+        return obj
+    else
+        -- print("셋")
+        setting(self)
     end
-
-    --값 setting
-    for key, v in pairs(obj) do
-        local userdata = obj[1]
-        userdata[key] = v
-    end
-
-    return obj
 end
 
 --전역 클래스 정의
@@ -75,11 +92,15 @@ panel =
 --테스트 코드
 Client.RunLater(
     function()
-        a = panel:set {rect = Rect(1, 1, 200, 200), xy = Point(2, 3), fsfs = 12323}
-        -- a = panel:set {}
-
-        -- a:set {width = 300}
-        -- a:set {width = 300, xy = Point(1, 1)}
+        a =
+            panel:set {
+            rect = Rect(1, 1, 150, 150),
+            xy = Point(1, 1)
+        }
+        a:set {
+            width = 500,
+            xy = Point(123, 123)
+        }
     end,
     2
 )
