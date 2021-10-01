@@ -12,18 +12,8 @@
         pivotY = 0.5,
         pivot = Point(0.5, 0.5),
         anchor = 4,
-        TopLeft = 0,
-        -- TopCenter = 1
-        -- TopRight = 2
-        -- MiddleLeft = 3
-        -- MiddleCenter = 4
-        -- MiddleRight = 5
-        -- BottomLeft = 6
-        -- BottomCenter = 7
-        -- BottomRight = 8
         showOnTop = false,
         visible = true
-        -- enable = true
     }
 
     --자식 클래스 생성 메소드
@@ -46,118 +36,7 @@
             temp.color = obj.color
             return temp
         end
-
-        --그리드 패널 클래스 정의
-        gridPanel =
-            Control:class {
-            type = "GridPanel",
-            cellSize = Point(50, 50),
-            horizontal = true,
-            vertical = true
-        }
-        self.GridPanel = function(obj)
-            local temp = GridPanel()
-            temp.cellSize = obj.cellSize
-            temp.horizontal = obj.horizontal
-            temp.vertical = obj.vertical
-            return temp
-        end
-
-        --스크롤 패널 클래스 정의
-        scrollPanel =
-            Control:class {
-            type = "ScrollPanel",
-            masked = true,
-            horizontal = true,
-            vertical = true,
-            showHorizontalScrollbar = true,
-            showVerticalScrollbar = true
-        }
-        self.ScrollPanel = function(obj)
-            local temp = ScrollPanel()
-            temp.masked = obj.masked
-            temp.horizontal = obj.horizontal
-            temp.vertical = obj.vertical
-            temp.showHorizontalScrollbar = obj.showHorizontalScrollbar
-            temp.showVerticalScrollbar = obj.showVerticalScrollbar
-            return temp
-        end
-
-        --버튼 클래스 정의
-        button =
-            Control:class {
-            type = "Button",
-            color = Color(255, 255, 255),
-            text = "",
-            textColor = Color(0, 0, 0),
-            textSize = 16,
-            textAlign = 5,
-            -- UpperLeft = 1,
-            -- UpperCenter = 2
-            -- UpperRight = 3
-            -- MiddleLeft = 4
-            -- MiddleCenter = 5
-            -- MiddleRight = 6
-            -- LowerLeft = 7
-            -- LowerCenter = 8
-            -- LowerRight = 9
-            onClick
-        }
-        self.Button = function(obj)
-            local temp = Button(obj.text)
-            temp.color = obj.color
-            temp.textSize = obj.textSize
-            temp.textColor = obj.textColor
-            if obj.onClick then
-                temp.onClick.Add(obj.onClick)
-            end
-            return temp
-        end
-
-        --이미지 클래스 정의
-        image =
-            Control:class {
-            type = "Image",
-            path = "폴더/파일명.png",
-            imageType = 0,
-            -- Simple = 0,
-            -- Sliced ​​= 1,
-            -- Tiled = 2,
-            -- Filled = 3
-            fillMethod = 4,
-            -- 가로 = 0
-            -- 세로 = 1
-            -- 방사형 90 = 2
-            -- 방사형 180 = 3
-            -- 방사형 360 = 4
-            fillClockwise = true
-        }
-        self.Image = function(obj)
-            local temp = Image(obj.path)
-            temp.imageType = obj.imageType
-            temp.fillMethod = obj.fillMethod
-            temp.fillClockwise = obj.fillClockwise
-            return temp
-        end
-
-        --텍스트 클래스 정의
-        text =
-            Control:class {
-            type = "Text",
-            text = "",
-            textAlign = 0,
-            textSize = 15,
-            color = Color(255, 255, 255)
-        }
-        self.Text = function(obj)
-            local temp = Text(obj.text)
-            temp.textAlign = obj.textAlign
-            temp.textSize = obj.textSize
-            temp.color = obj.color
-            return temp
-        end
     end
-    Control:setType()
 
     --객체 생성 멤버함수
     function Control:new(obj)
