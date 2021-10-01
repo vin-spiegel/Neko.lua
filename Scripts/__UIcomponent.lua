@@ -166,6 +166,24 @@ function Control:anchor(n)
     end
 end
 
+--color get/set
+function Control:color(r, g, b, a)
+    local userdata = self.obj
+
+    if not n then
+        --get
+        return userdata.color
+    elseif type(r) == "number" and type(g) == "number" and type(b) == "number" then
+        --set
+        if type(a) == "number" then
+            userdata.color = Color(r, g, b, a)
+        else
+            userdata.color = Color(r, g, b)
+        end
+        return self
+    end
+end
+
 --객체 set 함수
 function Control:set(var)
     local tablekeys = function()
@@ -177,8 +195,8 @@ function Control:set(var)
     end
 
     if not var or (type(var) == "table" and tablekeys() == 0) then
-        print("Error: 설정할 프로퍼티 값이 없습니다.")
-        return
+        -- print("Error: 설정할 프로퍼티 값이 없습니다.")
+        return self
     end
 
     --객체에 프로퍼티 값 설정
@@ -205,13 +223,6 @@ function Control:new(var)
 
     --유저데이터 타입 객체 생성
     local userdata = self.newUserData()
-
-    -- --프리셋 설정
-    userdata.rect = Rect(self.prototype.x, self.prototype.y, self.prototype.width, self.prototype.height)
-    userdata.pivotX, userdata.pivotY = self.prototype.pivotX, self.prototype.pivotY
-    userdata.anchor = self.prototype.anchor
-    userdata.showOnTop = self.prototype.showOnTop
-    userdata.visible = self.prototype.visible
 
     --인스턴스에 obj키를 가지는 유저데이터 넣어주기
     inst.obj = userdata
@@ -245,23 +256,160 @@ panel =
     end
 }
 
+--##button Class
 button =
     Control:class {
     type = "Button",
     --유저데이터 생성 함수
     newUserData = function()
-        local temp = Button()
-        --기본 값 세팅
-        temp.color = Color(0, 0, 0, 255)
+        return Button()
+    end
+}
+function button:onClick(_func)
+    local userdata = self.obj
+
+    if not _func then
+        --get
+        return userdata.onClick
+    elseif type(_func) == "function" then
+        --set
+        userdata.onClick.Add(_func)
+        return self
+    end
+end
+function button:text(s)
+    local userdata = self.obj
+    if not s then
+        return userdata.text
+    elseif type(s) == "string" then
+        userdata.text = s
+        return self
+    end
+end
+function button:textColor(n)
+    local userdata = self.obj
+
+    if not n then
+        --get
+        return userdata.color
+    elseif type(r) == "number" and type(g) == "number" and type(b) == "number" then
+        --set
+        if type(a) == "number" then
+            userdata.color = Color(r, g, b, a)
+        else
+            userdata.color = Color(r, g, b)
+        end
+        return self
+    end
+end
+function button:textAlign(n)
+    local userdata = self.obj
+
+    if not n then
+        return userdata.textAlign
+    elseif type(n) == "number" then
+        userdata.textAlign = n
+        return self
+    end
+end
+function button:textSize(n)
+    local userdata = self.obj
+
+    if not n then
+        return userdata.textSize
+    elseif type(n) == "number" then
+        userdata.textSize = n
+        return self
+    end
+end
+
+--##color Class
+color =
+    Control:class {
+    type = "Color",
+    newUserData = function()
+        local temp = Color(0, 0, 0, 0)
         return temp
     end
 }
+function color:color(r, g, b, a)
+    print("칼라객체 접근")
+    local obj
 
+    if type(r) == "number" and type(g) == "number" and type(b) == "number" then
+        --set
+        print("case1")
+        if type(a) == "number" then
+            print("case3")
+            obj = Color(r, g, b, a)
+        else
+            print("case4")
+            obj = Color(r, g, b)
+        end
+    elseif tostring(r) == "Game.Scripts.ScriptColor" then
+        print("case2")
+        --set
+        obj = r
+    end
+    return obj
+end
+
+--##text Class
+text =
+    Control:class {
+    type = "Text",
+    newUserData = function()
+        local temp = Text()
+        return temp
+    end
+}
+function text:color(r, g, b, a)
+    local userdata = self.obj
+    if not r then
+        --get
+        return userdata.color
+    else
+        userdata.color = color:color(r, g, b, a)
+        print(userdata.color.r)
+        return self
+    end
+end
+function text:text(s)
+    print("텍스트 텍스트")
+    local userdata = self.obj
+    if not s then
+        return userdata.text
+    elseif type(s) == "string" then
+        userdata.text = s
+        return self
+    end
+end
+function text:textAlign(n)
+    local userdata = self.obj
+
+    if not n then
+        return userdata.textAlign
+    elseif type(n) == "number" then
+        userdata.textAlign = n
+        return self
+    end
+end
+function text:textSize(n)
+    local userdata = self.obj
+
+    if not n then
+        return userdata.textSize
+    elseif type(n) == "number" then
+        userdata.textSize = n
+        return self
+    end
+end
+
+function testCode()
+    -- local a = button:new {text = "안녕하세요 버튼 텍스트"}
+    local b = text:new {text = "안녕하세요 텍스트"}:color(255, 2555, 3)
+    -- local a = color:new {}:color()
+    -- print(a)
+end
 --테스트 코드
-Client.RunLater(
-    function()
-        test = panel:new {anchor = 1}:x(150)
-        -- test:set {x = 100}
-    end,
-    1
-)
+Client.RunLater(testCode, 1)
