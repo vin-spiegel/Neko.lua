@@ -44,14 +44,6 @@ end
 
 --멤버함수모음
 --Rect관련
-function Control:width(n)
-    local userdata = self[1]
-    if not n then
-        return userdata.width
-    else
-        userdata.width = n
-    end
-end
 
 function Control:Rect(n)
     print("Rect 호출")
@@ -78,30 +70,31 @@ function Control:set(obj)
     table.print(self)
 end
 
+--네코 객체 생성
+
 --객체 생성및 최초값 설정
-function Control:new(obj)
+function Control:new(var)
     --userdata객체가 없을때 새로 생성
     if self[1] then
         print("이미 객체가 있습니다.")
     end
     --들어온 테이블에 Control 클래스 연결
-    setmetatable(obj, self)
+    local inst = setmetatable({}, self)
     self.__index = self
 
-    --userdata객체 생성 후 테이블 삽입
-    local inst = self[obj.type](obj)
+    --유저데이터 타입 객체 생성
+    local userdata = self.newUserData()
 
-    --프리셋 설정
-    inst.rect = Rect(self.prototype.x, self.prototype.y, self.prototype.width, self.prototype.height)
-    inst.pivotX, inst.pivotY = self.prototype.pivotX, self.prototype.pivotY
+    -- --프리셋 설정
+    userdata.rect = Rect(self.prototype.x, self.prototype.y, self.prototype.width, self.prototype.height)
+    userdata.pivotX, userdata.pivotY = self.prototype.pivotX, self.prototype.pivotY
+    userdata.anchor = self.prototype.anchor
+    userdata.showOnTop = self.prototype.showOnTop
+    userdata.visible = self.prototype.visible
 
-    inst.anchor = self.prototype.anchor
-    inst.showOnTop = self.prototype.showOnTop
-    inst.visible = self.prototype.visible
-
-    table.insert(obj, inst)
-    self:set(obj)
-    return obj
+    --인스턴스에 obj키를 가지는 유저데이터 넣어주기
+    inst.obj = userdata
+    return inst
 end
 
 --전역 클래스 정의
@@ -109,13 +102,27 @@ end
 panel =
     Control:class {
     type = "Panel",
-    color = Color(0, 0, 0, 150)
+    color = Color(0, 0, 0, 150),
+    --유저데이터 생성 함수
+    newUserData = function()
+        local temp = Panel()
+        temp.color = panel.color
+        return temp
+    end
 }
---네코 객체 생성
-Control.Panel = function(obj)
-    local temp = Panel()
-    temp.color = obj.color
-    return temp
+function Control:test()
+    print("테스트함수 호출")
+    return self
+end
+
+function Control:width(n)
+    local userdata = self.obj
+    if not n then
+        return userdata.width
+    else
+        userdata.width = n
+        return self
+    end
 end
 --테스트 코드
 Client.RunLater(
@@ -124,7 +131,8 @@ Client.RunLater(
             panel:new {
             rect = Rect(11, 44, 200, 150),
             xy = Point(22, 33)
-        }:width(50)
+        }:test():width(100)
+        print(a.type)
     end,
     2
 )
