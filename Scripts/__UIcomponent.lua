@@ -21,14 +21,14 @@ local Control = {
 }
 
 --##########
---멤버함수모음
+--멤버함수정의
 --##########
 
 --Rect관련
-
 --Rect get/set
 function Control:Rect(x, y, width, height)
     local userdata = self.obj
+
     if type(x) == "number" and type(y) == "number" and type(width) == "number" and type(height) == "number" then
         --set
         userdata.rect = Rect(x, y, width, height)
@@ -38,6 +38,69 @@ function Control:Rect(x, y, width, height)
         return Rect(userdata.x, userdata.y, userdata.width, userdata.height)
     else
         print("error : 인자 값이 잘못되었습니다.")
+    end
+end
+
+--rect get/set
+function Control:rect(rec)
+    local userdata = self.obj
+    if not rec then
+        return userdata.rect
+    elseif tostring(rec) == "Game.Scripts.ScriptRect" then
+        userdata.rect = rec
+        return self
+    end
+end
+
+--x,y point get/set
+--@param table point
+--@returns userData Point
+function Control:xy(x, y)
+    local userdata = self.obj
+    if not x and not y then
+        return Point(userdata.x, userdata.y)
+    elseif type(x) == "table" then
+        print("table")
+        userdata.x = x.x
+        userdata.y = x.y
+        return self
+    elseif type(x) == "number" and type(y) == "number" then
+        print("number")
+        userdata.x = x
+        userdata.y = y
+        return self
+    end
+end
+--x point get/set
+function Control:x(n)
+    local userdata = self.obj
+    if not n then
+        return userdata.x
+    elseif type(n) == "number" then
+        userdata.x = n
+        return self
+    end
+end
+
+--y point get/set
+function Control:y(n)
+    local userdata = self.obj
+    if not n then
+        return userdata.x
+    elseif type(n) == "number" then
+        userdata.y = n
+        return self
+    end
+end
+
+--width get/set
+function Control:width(n)
+    local userdata = self.obj
+    if not n then
+        return userdata.width
+    elseif type(n) == "number" then
+        userdata.width = n
+        return self
     end
 end
 
@@ -52,38 +115,73 @@ function Control:height(n)
     end
 end
 
---x,y point get/set
---@param table point
---@returns userData Point
-function Control:xy(point)
+--pivot 관련
+--pivot get/set
+function Control:pivot(x, y)
     local userdata = self.obj
-    if not point then
-        return Point(userdata.x, userdata.y)
-    elseif type(point) == "table" then
-        userdata.x = point[1]
-        userdata.y = point[2]
+    if not x and not y then
+        return Point(userdata.pivotX, userdata.pivotY)
+    elseif tostring(x) == "Game.Scripts.ScriptPoint" then
+        userdata.pivotX = x.x
+        userdata.pivotY = x.y
+        return self
+    elseif type(x) == "number" and type(y) == "number" then
+        userdata.pivotX = x
+        userdata.pivotY = y
+        return self
+    end
+end
+
+--pivotX get/set
+function Control:pivotX(n)
+    local userdata = self.obj
+    if not n then
+        return userdata.pivotX
+    elseif type(n) == "number" then
+        userdata.pivotX = n
+        return self
+    end
+end
+
+--pivotY get/set
+function Control:pivotY(n)
+    local userdata = self.obj
+    if not n then
+        return userdata.pivotX
+    elseif type(n) == "number" then
+        userdata.pivotY = n
+        return self
+    end
+end
+
+--anchor get/set
+function Control:anchor(n)
+    local userdata = self.obj
+
+    if not n then
+        return userdata.anchor
+    elseif type(n) == "number" then
+        userdata.anchor = n
         return self
     end
 end
 
 --객체 set 함수
-function Control:set(var, inst)
-    local userdata
-    --최초 생성
-    if not var then
-        print("Error: 값이 없습니다.")
-        return
-    elseif inst then
-        --inst에 객체가 있을때
-        for key, v in pairs(var) do
-            if inst[key] then
-                inst[key](inst, v)
-            end
+function Control:set(var)
+    local tablekeys = function()
+        local n = 0
+        for _, _ in pairs(var) do
+            n = n + 1
         end
-        return inst
+        return n
     end
 
-    --self에 객체가 있을때
+    if not var or (type(var) == "table" and tablekeys() == 0) then
+        print("Error: 설정할 프로퍼티 값이 없습니다.")
+        return
+    end
+
+    --객체에 프로퍼티 값 설정
     for key, v in pairs(var) do
         if self[key] then
             self[key](self, v)
@@ -97,8 +195,9 @@ end
 --객체 생성및 최초값 설정
 function Control:new(var)
     --userdata객체가 없을때 새로 생성
-    if self[1] then
-        print("이미 객체가 있습니다.")
+    if self.obj then
+        print("error : 이미 객체가 있습니다.")
+        return
     end
     --들어온 테이블에 Control 클래스 연결
     local inst = setmetatable({}, self)
@@ -118,18 +217,8 @@ function Control:new(var)
     inst.obj = userdata
 
     --들어온 var기준으로 set
-    return self:set(var, inst)
-end
-
---가로 길이 get/set
-function Control:width(n)
-    local userdata = self.obj
-    if not n then
-        return userdata.width
-    elseif type(n) == "number" then
-        userdata.width = n
-        return self
-    end
+    local a = self.set(inst, var)
+    return a
 end
 
 --자식 클래스 생성 메소드
@@ -171,9 +260,8 @@ button =
 --테스트 코드
 Client.RunLater(
     function()
-        test = panel:new {width = 50, xy = {12, 34}}
-        -- test:set {}:Rect(20, 30, 150, 200)
-        -- test:width(50):height(50)
+        test = panel:new {anchor = 1}:x(150)
+        -- test:set {x = 100}
     end,
     1
 )
