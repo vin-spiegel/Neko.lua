@@ -6,6 +6,7 @@ local Control = {
         x = 0,
         y = 0,
         xy = Point(0, 0),
+        width = 100,
         height = 100,
         rect = Rect(0, 0, 100, 100),
         --
@@ -17,8 +18,6 @@ local Control = {
         showOnTop = false,
         visible = true
     },
-    x = 0,
-    y = 0,
     xy = function(userdata, v)
         userdata.x = v.x
         userdata.y = v.y
@@ -52,8 +51,6 @@ function Control:width(n)
     else
         userdata.width = n
     end
-    -- print("width 호출")
-    -- print(userdata, "width : " .. userdata.width)
 end
 
 function Control:Rect(n)
@@ -95,12 +92,12 @@ function Control:new(obj)
     local inst = self[obj.type](obj)
 
     --프리셋 설정
-    -- inst.rect = Rect(self.x, self.y, self.width, self.height)
-    inst.pivotX, inst.pivotY = self.pivotX, self.pivotY
+    inst.rect = Rect(self.prototype.x, self.prototype.y, self.prototype.width, self.prototype.height)
+    inst.pivotX, inst.pivotY = self.prototype.pivotX, self.prototype.pivotY
 
-    inst.anchor = self.anchor
-    inst.showOnTop = self.showOnTop
-    inst.visible = self.visible
+    inst.anchor = self.prototype.anchor
+    inst.showOnTop = self.prototype.showOnTop
+    inst.visible = self.prototype.visible
 
     table.insert(obj, inst)
     self:set(obj)
