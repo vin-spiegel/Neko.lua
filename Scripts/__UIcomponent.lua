@@ -1,11 +1,9 @@
 --##UI생성 컴포넌트
+--##__UIcomponent.lua
 
 --##컨트롤 클래스
 local Control = {
-    --######################
-    --##Properties Set / Get
-    --######################
-    -- {number,number,number,numeber} => ScriptRect or self
+    -- {number,number,number,number} => ScriptRect or self
     Rect = function(self, x, y, width, height)
         local userdata = self.obj
 
@@ -24,8 +22,6 @@ local Control = {
     end,
     -- {ScriptRect} => ScriptRect or self
     rect = function(self, rec)
-        print("rect함수 발동")
-        print(self.obj)
         local userdata = self.obj
         if not rec then
             --get
@@ -95,10 +91,13 @@ local Control = {
     end,
     --{number or ScriptPoint} => ScriptPoint or self
     pivot = function(self, x, y)
+        assert(self.obj)
         local userdata = self.obj
         if not x and not y then
+            --get
             return Point(userdata.pivotX, userdata.pivotY)
         elseif tostring(x) == "Game.Scripts.ScriptPoint" then
+            --set
             userdata.pivotX = x.x
             userdata.pivotY = x.y
             return self
@@ -217,7 +216,6 @@ local Control = {
     end,
     --{table} => self
     set = function(self, var)
-        print("set함수 발동")
         local tablekeys = function()
             local n = 0
             for _, _ in pairs(var) do
@@ -284,30 +282,35 @@ panel =
         return self.set(inst, var)
     end
 }
---테스트 코드
-function testCode()
-    local a = panel:new {rect = Rect(0, 0, 100, 100)}:Color(200, 0, 0, 150)
-end
-Client.RunLater(testCode, 2)
+
 --##button Class
 button =
     Control:class {
+    -- {number or userdata, number, number, number}=> ScriptColor or nil
+    Color = function(self, r, g, b, a)
+        local obj = Control.color(self, r, g, b, a)
+        return obj or self
+    end,
+    -- {number or userdata, number, number, number}=> ScriptColor or nil
     color = function(self, r, g, b, a)
         local obj = Control.color(self, r, g, b, a)
         return obj or self
     end,
+    -- {function} => EventListner or self
     onClick = function(self, _func)
         local userdata = self.obj
-
+        print(self)
         if not _func then
             --get
             return userdata.onClick
-        elseif type(_func) == "function" then
+        elseif _func and type(_func) == "function" then
             --set
+            print("case2")
             userdata.onClick.Add(_func)
             return self
         end
     end,
+    -- {string} => string or self
     text = function(self, s)
         local userdata = self.obj
         if not s then
@@ -317,6 +320,7 @@ button =
             return self
         end
     end,
+    -- {number} => number or self
     textAlign = function(self, n)
         local userdata = self.obj
 
@@ -327,66 +331,12 @@ button =
             return self
         end
     end,
-    textColor = function(n)
-        local userdata = self.obj
-
-        if not n then
-            --get
-            return userdata.color
-        elseif type(r) == "number" and type(g) == "number" and type(b) == "number" then
-            --set
-            if type(a) == "number" then
-                userdata.color = Color(r, g, b, a)
-            else
-                userdata.color = Color(r, g, b)
-            end
-            return self
-        end
-    end,
-    textSize = function(n)
-        local userdata = self.obj
-
-        if not n then
-            return userdata.textSize
-        elseif type(n) == "number" then
-            userdata.textSize = n
-            return self
-        end
-    end,
-    new = function(self, var)
-        assert(self and self.obj == nil)
-        self.__index = self
-        local inst = setmetatable({obj = Button()}, self)
-        return self.set(inst, var)
-    end
-}
-
---##Text Class
-text =
-    Control:class {
-    color = function(self, r, g, b, a)
+    -- {n or ScriptColor, n, n, n}, => number or self
+    textColor = function(self, r, g, b, a)
         local obj = Control.color(self, r, g, b, a)
         return obj or self
     end,
-    text = function(self, s)
-        local userdata = self.obj
-        if not s then
-            return userdata.text
-        elseif type(s) == "string" then
-            userdata.text = s
-            return self
-        end
-    end,
-    textAlign = function(self, n)
-        local userdata = self.obj
-
-        if not n then
-            return userdata.textAlign
-        elseif type(n) == "number" then
-            userdata.textAlign = n
-            return self
-        end
-    end,
+    -- { number } => number or self
     textSize = function(self, n)
         local userdata = self.obj
 
@@ -397,6 +347,76 @@ text =
             return self
         end
     end,
+    -- { table } => table
+    new = function(self, var)
+        assert(self and self.obj == nil)
+        self.__index = self
+        local inst = setmetatable({obj = Button()}, self)
+        return self.set(inst, var)
+    end
+}
+
+--테스트 코드
+function testCode()
+    local a =
+        button:new {
+        rect = Rect(300, 150, 100, 100),
+        color = Color(255, 0, 0, 200)
+        -- pivot = Point(1, 1)
+    }:onClick(
+        function()
+            print("onClick Test")
+        end
+    )
+end
+Client.RunLater(testCode, 2)
+
+--##Text Class
+text =
+    Control:class {
+    --{ number or userdata, number, number, number } => ScriptColor or nil
+    color = function(self, r, g, b, a)
+        local obj = Control.color(self, r, g, b, a)
+        return obj or self
+    end,
+    --{ number or userdata, number, number, number } => ScriptColor or nil
+    Color = function(self, r, g, b, a)
+        local obj = Control.color(self, r, g, b, a)
+        return obj or self
+    end,
+    --{ string } => string or nil
+    text = function(self, s)
+        local userdata = self.obj
+        if not s then
+            return userdata.text
+        elseif type(s) == "string" then
+            userdata.text = s
+            return self
+        end
+    end,
+    --( number ) => number or nil
+    textAlign = function(self, n)
+        local userdata = self.obj
+
+        if not n then
+            return userdata.textAlign
+        elseif type(n) == "number" then
+            userdata.textAlign = n
+            return self
+        end
+    end,
+    --( number ) => number or nil
+    textSize = function(self, n)
+        local userdata = self.obj
+
+        if not n then
+            return userdata.textSize
+        elseif type(n) == "number" then
+            userdata.textSize = n
+            return self
+        end
+    end,
+    --( table ) => table or nil
     new = function(self, var)
         assert(self and self.obj == nil)
         self.__index = self
