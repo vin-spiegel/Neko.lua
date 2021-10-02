@@ -389,32 +389,7 @@ panel =
         return self.set(inst, var)
     end
 }
---테스트 코드
-function testCode()
-    local mainPanel =
-        panel:new {
-        rect = Rect(0, 0, 50, 50),
-        color = Color(255, 0, 0, 150),
-        anchor = 4,
-        pivot = Point(0.5, 0.5)
-        -- child = subPanel
-    }
-    -- local subPanel =
-    --     button:new {
-    --     rect = Rect(0, 0, 100, 100),
-    --     color = Color(0, 200, 0, 100),
-    --     parent = mainPanel
-    -- }
-    a = mainPanel:clone()
-    mainPanel:x(-100):color(0, 200, 0)
-    a:x(100):color(200, 0, 0):height(300):destroy()
-    a = nil
-    print(a)
-    -- table.print(a)
-    -- mainPanel:attachToUnitID(Point(0, 0), Client.field.units[1].id)
-    -- mainPanel:attachToUnit(Point(0, 0), Client.myPlayerUnit)
-end
-Client.RunLater(testCode, 2)
+
 --##button Class
 button =
     Control:class {
