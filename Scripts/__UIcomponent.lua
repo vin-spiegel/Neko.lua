@@ -24,10 +24,16 @@ local Control = {
     end,
     -- {ScriptRect} => ScriptRect or self
     rect = function(self, rec)
+        print("rect함수 발동")
+        print(self.obj)
         local userdata = self.obj
         if not rec then
+            --get
+            print("case1")
             return userdata.rect
         elseif tostring(rec) == "Game.Scripts.ScriptRect" then
+            --set
+            print("case2")
             userdata.rect = rec
             return self
         end
@@ -134,6 +140,24 @@ local Control = {
         end
     end,
     -- {number or userdata, number, number, number}=> ScriptColor or nil
+    Color = function(self, r, g, b, a)
+        local userdata = self.obj
+        if not r and not g and not b and not a then
+            --get
+            return userdata.color
+        elseif tostring(r) == "Game.Scripts.ScriptColor" then
+            --set
+            userdata.color = r
+        elseif type(r) == "number" and type(g) == "number" and type(b) == "number" and type(a) == "number" then
+            --set
+            userdata.color.a = a
+            userdata.color = Color(r, g, b, a)
+        elseif type(r) == "number" and type(g) == "number" and type(b) == "number" then
+            --set
+            userdata.color = Color(r, g, b)
+        end
+    end,
+    -- {number or userdata, number, number, number}=> ScriptColor or nil
     color = function(self, r, g, b, a)
         local userdata = self.obj
         if not r and not g and not b and not a then
@@ -236,6 +260,11 @@ panel =
         local obj = Control.color(self, r, g, b, a)
         return obj or self
     end,
+    --{n or ScriptColor,n,n,n} => ScriptColor or self
+    Color = function(self, r, g, b, a)
+        local obj = Control.color(self, r, g, b, a)
+        return obj or self
+    end,
     --{bool} => bool or self
     masked = function(self)
         table.print(self)
@@ -247,7 +276,7 @@ panel =
         print(self)
         return self
     end,
-    --
+    --{table} => self
     new = function(self, var)
         assert(self and self.obj == nil)
         self.__index = self
@@ -255,7 +284,11 @@ panel =
         return self.set(inst, var)
     end
 }
-
+--테스트 코드
+function testCode()
+    local a = panel:new {rect = Rect(0, 0, 100, 100)}:Color(200, 0, 0, 150)
+end
+Client.RunLater(testCode, 2)
 --##button Class
 button =
     Control:class {
@@ -331,12 +364,6 @@ button =
 --##Text Class
 text =
     Control:class {
-    new = function(self, var)
-        assert(self and self.obj == nil)
-        self.__index = self
-        local inst = setmetatable({obj = Text()}, self)
-        return self.set(inst, var)
-    end,
     color = function(self, r, g, b, a)
         local obj = Control.color(self, r, g, b, a)
         return obj or self
@@ -369,5 +396,57 @@ text =
             userdata.textSize = n
             return self
         end
+    end,
+    new = function(self, var)
+        assert(self and self.obj == nil)
+        self.__index = self
+        local inst = setmetatable({obj = Text()}, self)
+        return self.set(inst, var)
+    end
+}
+
+gridPanel =
+    Control:class {
+    new = function(self, var)
+        assert(self and self.obj == nil)
+        self.__index = self
+        local inst = setmetatable({obj = GridPanel()}, self)
+        return self.set(inst, var)
+    end
+}
+inputPanel =
+    Control:class {
+    new = function(self, var)
+        assert(self and self.obj == nil)
+        self.__index = self
+        local inst = setmetatable({obj = InputPanel()}, self)
+        return self.set(inst, var)
+    end
+}
+image =
+    Control:class {
+    new = function(self, var)
+        assert(self and self.obj == nil)
+        self.__index = self
+        local inst = setmetatable({obj = Image()}, self)
+        return self.set(inst, var)
+    end
+}
+sprite =
+    Control:class {
+    new = function(self, var)
+        assert(self and self.obj == nil)
+        self.__index = self
+        local inst = setmetatable({obj = Sprite()}, self)
+        return self.set(inst, var)
+    end
+}
+slider =
+    Control:class {
+    new = function(self, var)
+        assert(self and self.obj == nil)
+        self.__index = self
+        local inst = setmetatable({obj = Slider()}, self)
+        return self.set(inst, var)
     end
 }
