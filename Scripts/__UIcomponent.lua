@@ -25,11 +25,9 @@ local Control = {
         local userdata = self.obj
         if not rec then
             --get
-            print("case1")
             return userdata.rect
         elseif tostring(rec) == "Game.Scripts.ScriptRect" then
             --set
-            print("case2")
             userdata.rect = rec
             return self
         end
@@ -183,36 +181,145 @@ local Control = {
         else
             --set
             if type(obj) == "userdata" then
-                userdata.AddChildren(obj)
+                userdata.AddChild(obj)
             elseif type(obj) == "table" and obj.obj then
                 local child = obj.obj
-                userdata.AddChildren(child)
+                print(child)
+                userdata.AddChild(child)
             end
+            return self
         end
     end,
-    parent = function(self)
+    -- {ScriptControl}=> table or self
+    child = function(self, obj)
+        local userdata = self.obj
+        if not obj then
+            --get
+            return userdata.children
+        else
+            --set
+            if type(obj) == "userdata" then
+                userdata.AddChild(obj)
+            elseif type(obj) == "table" and obj.obj then
+                local child = obj.obj
+                print(child)
+                userdata.AddChild(child)
+            end
+            return self
+        end
+    end,
+    -- {ScriptControl}=> ScriptControl or self
+    parent = function(self, obj)
+        local userdata = self.obj
+        if not obj then
+            --get
+            return userdata.children
+        else
+            --set
+            if type(obj) == "userdata" then
+                obj.AddChild(userdata)
+            elseif type(obj) == "table" and obj.obj then
+                local parent = obj.obj
+                parent.AddChild(userdata)
+            end
+            return self
+        end
     end,
     --{bool} => bool or self
     showOnTop = function(self, bool)
+        local userdata = self.obj
+        if bool == nil then
+            return userdata.showOnTop
+        elseif bool == true then
+            userdata.bool = true
+            return self
+        elseif bool == false then
+            userdata.bool = false
+            return self
+        end
     end,
     --{n} => n or self
     orderIndex = function(self, n)
+        assert(self and self.obj)
+        if not n then
+            return self.obj.GetOrderIndex()
+        elseif n and type(n) == "number" then
+            userdata.SetOrderIndex(n)
+            return self
+        end
     end,
-    --{ScriptUnit} => self
-    attachToUnit = function(self)
-    end,
-    --{number} => self
-    attachToUnitID = function(self)
-    end,
-    clone = function(self)
-    end,
-    destroy = function(self)
-    end,
-    removeChild = function(self)
-    end,
+    --{} => self
     orderToFirst = function(self)
+        assert(self and self.obj)
+        self.obj.OrderToFirst()
+        return self
     end,
+    --{} => self
     orderToLast = function(self)
+        assert(self and self.obj)
+        self.obj.OrderToLast()
+        return self
+    end,
+    --**작동안됨
+    --{ScriptUnit} => self
+    attachToUnit = function(self, point, unit)
+        assert(self and self.obj)
+        assert(point and tostring(point) == "Game.Scripts.ScriptPoint")
+        assert(
+            unit and tostring(unit) == "Game.Scripts.ScriptMyPlayerUnit" or tostring(unit) == "Game.Scripts.ScriptUnit"
+        )
+        self.obj.AttachToUnit(point, unit)
+        return self
+    end,
+    --**작동안됨
+    --{number} => self
+    attachToUnitID = function(self, point, id)
+        assert(self and self.obj)
+        assert(tostring(point) == "Game.Scripts.ScriptPoint")
+        assert(type(id) == "number")
+        self.obj.AttachToUnitID(point, id)
+        return self
+    end,
+    --() => self
+    clone = function(self)
+        assert(self and self.obj)
+        self.__index = self
+        local inst = setmetatable({obj = self.obj.Clone()}, self)
+        return inst
+    end,
+    --() => self
+    Clone = function(self)
+        assert(self and self.obj)
+        self.__index = self
+        local inst = setmetatable({obj = self.obj.Clone()}, self)
+        return inst
+    end,
+    --() => self
+    destroy = function(self)
+        assert(self and self.obj)
+        self.obj.Destroy()
+        self = nil
+        return
+    end,
+    --() => self
+    Destroy = function(self)
+        assert(self and self.obj)
+        self.obj.Destroy()
+        self = nil
+        return
+    end,
+    --(ScriptControl) => self
+    removeChild = function(self, child)
+        assert(self and self.obj)
+        assert(child and (child.obj or type(child) == "userdata"))
+        if child.obj then
+            print("case1")
+            self.obj.RemoveChild(child.obj)
+        else
+            print("case2")
+            self.obj.RemoveChild(child)
+        end
+        return self
     end,
     --{table} => self
     set = function(self, var)
@@ -282,7 +389,32 @@ panel =
         return self.set(inst, var)
     end
 }
-
+--테스트 코드
+function testCode()
+    local mainPanel =
+        panel:new {
+        rect = Rect(0, 0, 50, 50),
+        color = Color(255, 0, 0, 150),
+        anchor = 4,
+        pivot = Point(0.5, 0.5)
+        -- child = subPanel
+    }
+    -- local subPanel =
+    --     button:new {
+    --     rect = Rect(0, 0, 100, 100),
+    --     color = Color(0, 200, 0, 100),
+    --     parent = mainPanel
+    -- }
+    a = mainPanel:clone()
+    mainPanel:x(-100):color(0, 200, 0)
+    a:x(100):color(200, 0, 0):height(300):destroy()
+    a = nil
+    print(a)
+    -- table.print(a)
+    -- mainPanel:attachToUnitID(Point(0, 0), Client.field.units[1].id)
+    -- mainPanel:attachToUnit(Point(0, 0), Client.myPlayerUnit)
+end
+Client.RunLater(testCode, 2)
 --##button Class
 button =
     Control:class {
@@ -305,7 +437,6 @@ button =
             return userdata.onClick
         elseif _func and type(_func) == "function" then
             --set
-            print("case2")
             userdata.onClick.Add(_func)
             return self
         end
@@ -355,21 +486,6 @@ button =
         return self.set(inst, var)
     end
 }
-
---테스트 코드
-function testCode()
-    local a =
-        button:new {
-        rect = Rect(300, 150, 100, 100),
-        color = Color(255, 0, 0, 200)
-        -- pivot = Point(1, 1)
-    }:onClick(
-        function()
-            print("onClick Test")
-        end
-    )
-end
-Client.RunLater(testCode, 2)
 
 --##Text Class
 text =

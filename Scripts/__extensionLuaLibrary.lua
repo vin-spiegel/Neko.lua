@@ -1,5 +1,8 @@
 --테이블 인자 출력
 function table.print(node)
+    if type(node) ~= "table" then
+        print("error : table 타입이 아닙니다.", type(node))
+    end
     local cache, stack, output = {}, {}, {}
     local depth = 1
     local output_str = "{\n"
