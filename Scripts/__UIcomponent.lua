@@ -5,7 +5,6 @@ local Control = {
     --( number, number, number, number ) => ScriptRect or self
     Rect = function(self, x, y, width, height)
         local userdata = self.obj
-
         if type(x) == "number" and type(y) == "number" and type(width) == "number" and type(height) == "number" then
             --set
             userdata.rect = Rect(x, y, width, height)
@@ -518,13 +517,151 @@ text =
 }
 gridPanel =
     Control:class {
+    cellSize = function(self, point)
+    end,
+    horizontal = function(self, bool)
+    end,
+    vertical = function(self, bool)
+    end,
+    row = function(self, n)
+        -- print("행 수정")
+        if n then
+            self.values.row = n
+        else
+            return self.values.row
+        end
+        return self:draw()
+    end,
+    column = function(self, n)
+        -- print("열 수정")
+        if n then
+            self.values.column = n
+        else
+            return self.values.row
+        end
+        return self:draw()
+    end,
+    padding = function(self, n)
+        -- print("패딩 수정")
+        if n then
+            self.values.padding = n
+        else
+            return self.values.row
+        end
+        return self:draw()
+    end,
+    remove = function(self)
+        local main = self.obj
+        local startIndex = self.values.column * self.values.row + 1
+        local temp = {}
+        for i = startIndex, #main.children do
+            temp[i] = main.children[i]
+        end
+        for i = startIndex, #main.children do
+            main.RemoveChild(temp[i])
+            temp[i].Destroy()
+            temp[i] = nil
+        end
+        temp = nil
+        return self
+    end,
+    draw = function(self)
+        print("셀 그리기")
+        local main = self.obj
+        local row = self.values.row
+        local column = self.values.column
+        local padding = self.values.padding
+        local cellX = 0
+        local cellY = 0
+        local cellWidth = (main.width - ((row + 1) * padding)) / row --3
+        local cellHeight = (main.height - ((column + 1) * padding)) / column
+
+        --Add
+        local c = 1
+        for i = 1, row do
+            cellX = i * cellWidth - cellWidth + (padding * i)
+            for j = 1, column do
+                cellY = j * cellHeight - cellHeight + (padding * j)
+                local cell = main.children[c]
+                if not cell then
+                    cell = Panel()
+                    main.AddChild(cell)
+                end
+                cell.rect = Rect(cellX, cellY, cellWidth, cellHeight)
+                cell.color = Color(rand(1, 255), rand(1, 255), rand(1, 255))
+                c = c + 1
+            end
+        end
+        if column * row < #main.children then
+            local temp = {}
+            local startIndex = column * row + 1
+            for i = startIndex, #main.children do
+                temp[i] = main.children[i]
+            end
+            for i = startIndex, #main.children do
+                main.RemoveChild(temp[i])
+                temp[i].Destroy()
+                temp[i] = nil
+            end
+            temp = nil
+        end
+
+        return self
+    end,
+    --( table ) => table
     new = function(self, var)
         assert(self and self.obj == nil)
+
         self.__index = self
-        local inst = setmetatable({obj = GridPanel()}, self)
+        local inst = {
+            --properties
+            obj = Panel(),
+            values = {
+                row = 1,
+                column = 1,
+                padding = 0,
+                cellSize = Point(30, 30)
+            }
+        }
+        setmetatable(inst, self)
+        --그리드패널 초기값 설정
+        inst.obj.color = Color(100, 0, 0, 150)
+
         return self.set(inst, var)
     end
 }
+
+--testCodeGridPanel
+function testCode()
+    main =
+        gridPanel:new {
+        width = 300,
+        height = 300,
+        pivot = Point(0.5, 0.5),
+        anchor = 4,
+        row = 4,
+        column = 5,
+        padding = 20
+    }:row(3)
+    local main = main.obj
+
+    -- end
+    -- a.obj.RemoveChild(a.obj.children[1])
+    print("자식갯수 : " .. #main.children)
+    -- a:column(7)
+
+    -- local b =
+    --     gridPanel:new {
+    --     width = 300,
+    --     height = 300,
+    --     pivot = Point(0.5, 0.5),
+    --     anchor = 4,
+    --     row = 10
+    -- }
+    -- print(b.values.row)
+end
+
+Client.RunLater(testCode, 2)
 inputPanel =
     Control:class {
     new = function(self, var)
@@ -561,3 +698,32 @@ slider =
         return self.set(inst, var)
     end
 }
+
+-- if g then
+--     for i, v in pairs(g.children) do
+--         v.Destroy()
+--         v = nil
+--     end
+-- end
+
+-- function newPanel()
+--     local a = Panel(Rect(0, 0, 30, 30))
+--     a.color = Color(rand(1, 255), rand(1, 255), rand(1, 255))
+--     return a
+-- end
+
+-- g = GridPanel()
+-- g.cellSize = Point(50, 50)
+-- g.horizontal = true
+-- g.vertical = true
+-- g.pivotX = 0.5
+-- g.pivotY = 0.5
+-- g.anchor = 4
+-- g.x = 0
+-- g.y = 0
+
+-- function grid(n)
+--     for i = 1, n do
+--         g.AddChild(newPanel())
+--     end
+-- end
