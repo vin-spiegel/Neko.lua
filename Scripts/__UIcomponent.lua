@@ -364,7 +364,7 @@ local Control = {
 panel =
     Control:class {
     --##set properties func
-    --{n or ScriptColor,n,n,n} => ScriptColor or self
+    --( n or ScriptColor,n,n,n} => ScriptColor or self
     color = function(self, r, g, b, a)
         local obj = Control.color(self, r, g, b, a)
         return obj or self
@@ -376,7 +376,6 @@ panel =
     end,
     --{bool} => bool or self
     masked = function(self)
-        table.print(self)
         return self
     end,
     --
