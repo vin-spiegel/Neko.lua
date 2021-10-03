@@ -5,6 +5,7 @@
 * 네코랜드에서 `고급기능`을 구현하려면, 대부분 `여러개 메소드와 콜백함수를 엮어서 만들어야 했습니다.`
 * `이쁘고 멋진 UI`를 만드려면 `클라이언트 스크립트가 굉장히 더러워졌습니다.`
 * 네코랜드 개발환경에 조금이라도 도움이 될까 생각하여 조금씩 만들게 되었습니다.
+* 현재 테스트 버전입니다.
 
 #### 구현된 함수들 💬
 - - -
@@ -14,23 +15,23 @@
   * `callbacks`
     * callbacks.onEquipItem:Add() - 아이템 장착 콜백
     * callbacks.offEquipItem:Add() - 아이템 장착 해제 콜백
-  * `Extensions`
-    * RunLater{}
 
 #### Client Scripts
 
   * `Control`
     * panel:new{}
-    * gridPanel:new{}
-    * scrollPanel:new{}
     * button:new{}
-    * image:new{}
     * text:new{}
+<!--     * gridPanel:new{}
+    * scrollPanel:new{} -->
+     
+<!--     * image:new{} -->
+     
     
-    * Animation:popUp()
-    * Animation:popDown()
-  * `Extensions`
-    * RunLater{}
+<!--     * Animation:popUp()
+    * Animation:popDown() -->
+<!--   * `Extensions`
+    * RunLater{} -->
 
 #### 사용방법 💬
 - - -
@@ -42,7 +43,8 @@
 ---
 * `Control` : 클라이언트 UI를 생성해주는 클래스입니다.
   * 멤버함수 `new{}`로 선언과 동시에 모든 프로퍼티에 대한 pre-set을 지정할수 있으며, 인스턴스를 반환합니다. 
-  * 모든 `Control` 하위 객체들의 pre-set 지정시 키 값을 명시해야합니다.
+  * set함수 사용시 `Control` 하위 객체들의 pre-set 지정시 키 값을 명시해야합니다.
+  * 모든 프로퍼티에 대한 `set` 함수가 존재합니다.
   
     ```lua
     local mainPanel = panel:new {} -- 프로퍼티를 명시하지 않으면 panel객체에 정의된 기본값으로 객체가 생성됩니다.
@@ -56,11 +58,8 @@
       color = Color(0,0,0,150) 
       parent = mainPanel, -- 선언과 동시에 부모 객체를 연결할 수 있습니다.
     }
-
-    local myImg = 
-      image:new {
-      path = "Icon/001.png"
-    }
+    print(subPanel:width()) -- 현재 subPanel의 width의 크기를 가져옴
+    subPanel:width(200) -- subPanel의 가로크기를 200으로 설정
 
     local myBtn = 
       button:new {
@@ -69,7 +68,7 @@
         print("클릭하였습니다.") 
       end,
       parent = subPanel
-    }
+    }:width(100):height(30):anchor(4) -- 프로퍼티 set/get함수는 self를 반환하기 때문에 다음과 같이 이어붙여 사용 가능합니다.
     ```
 
 * `callbacks.onEquipItem`, `callbacks.offEquipItem` : 아이템을 장착하고 벗을때 호출되는 이벤트입니다.
