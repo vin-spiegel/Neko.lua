@@ -1,6 +1,5 @@
 --##UI생성 컴포넌트
 --##__UIcomponent.lua
-
 --##컨트롤 클래스
 local Control = {
     --( number,number,number,number ) => ScriptRect or self
