@@ -565,8 +565,7 @@ gridPanel =
         temp = nil
         return self
     end,
-    draw = function(self)
-        print("셀 그리기")
+    draw = function(self, userdata)
         local main = self.obj
         local row = self.values.row
         local column = self.values.column
@@ -588,10 +587,12 @@ gridPanel =
                     main.AddChild(cell)
                 end
                 cell.rect = Rect(cellX, cellY, cellWidth, cellHeight)
-                cell.color = Color(rand(1, 255), rand(1, 255), rand(1, 255))
+                cell.color = Color(rand(1, 255), rand(1, 255), rand(1, 255), 150)
                 c = c + 1
             end
         end
+
+        --Remove
         if column * row < #main.children then
             local temp = {}
             local startIndex = column * row + 1
@@ -607,6 +608,10 @@ gridPanel =
         end
 
         return self
+    end,
+    set = function(self, var)
+        --오버라이드
+        return Control.set(self, var):draw()
     end,
     --( table ) => table
     new = function(self, var)
@@ -635,30 +640,22 @@ gridPanel =
 function testCode()
     main =
         gridPanel:new {
-        width = 300,
-        height = 300,
-        pivot = Point(0.5, 0.5),
-        anchor = 4,
-        row = 4,
-        column = 5,
-        padding = 20
-    }:row(3)
+        width = 150,
+        height = Client.height * 0.7,
+        pivot = Point(1, 0.5),
+        anchor = 5
+    }
+    main:set {
+        row = 7,
+        column = 8,
+        padding = 5
+    }
+    main:set {
+        width = 300
+    }
     local main = main.obj
 
-    -- end
-    -- a.obj.RemoveChild(a.obj.children[1])
     print("자식갯수 : " .. #main.children)
-    -- a:column(7)
-
-    -- local b =
-    --     gridPanel:new {
-    --     width = 300,
-    --     height = 300,
-    --     pivot = Point(0.5, 0.5),
-    --     anchor = 4,
-    --     row = 10
-    -- }
-    -- print(b.values.row)
 end
 
 Client.RunLater(testCode, 2)
