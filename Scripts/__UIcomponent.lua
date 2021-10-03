@@ -2,7 +2,7 @@
 --##__UIcomponent.lua
 --##컨트롤 클래스
 local Control = {
-    --( number,number,number,number ) => ScriptRect or self
+    --( number, number, number, number ) => ScriptRect or self
     Rect = function(self, x, y, width, height)
         local userdata = self.obj
 
