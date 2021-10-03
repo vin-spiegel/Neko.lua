@@ -636,29 +636,6 @@ gridPanel =
     end
 }
 
---testCodeGridPanel
-function testCode()
-    main =
-        gridPanel:new {
-        width = 150,
-        height = Client.height * 0.7,
-        pivot = Point(1, 0.5),
-        anchor = 5
-    }
-    main:set {
-        row = 7,
-        column = 8,
-        padding = 5
-    }
-    main:set {
-        width = 300
-    }
-    local main = main.obj
-
-    print("자식갯수 : " .. #main.children)
-end
-
-Client.RunLater(testCode, 2)
 inputPanel =
     Control:class {
     new = function(self, var)
@@ -695,32 +672,3 @@ slider =
         return self.set(inst, var)
     end
 }
-
--- if g then
---     for i, v in pairs(g.children) do
---         v.Destroy()
---         v = nil
---     end
--- end
-
--- function newPanel()
---     local a = Panel(Rect(0, 0, 30, 30))
---     a.color = Color(rand(1, 255), rand(1, 255), rand(1, 255))
---     return a
--- end
-
--- g = GridPanel()
--- g.cellSize = Point(50, 50)
--- g.horizontal = true
--- g.vertical = true
--- g.pivotX = 0.5
--- g.pivotY = 0.5
--- g.anchor = 4
--- g.x = 0
--- g.y = 0
-
--- function grid(n)
---     for i = 1, n do
---         g.AddChild(newPanel())
---     end
--- end
