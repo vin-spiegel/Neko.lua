@@ -550,21 +550,6 @@ gridPanel =
         end
         return self:draw()
     end,
-    remove = function(self)
-        local main = self.obj
-        local startIndex = self.values.column * self.values.row + 1
-        local temp = {}
-        for i = startIndex, #main.children do
-            temp[i] = main.children[i]
-        end
-        for i = startIndex, #main.children do
-            main.RemoveChild(temp[i])
-            temp[i].Destroy()
-            temp[i] = nil
-        end
-        temp = nil
-        return self
-    end,
     draw = function(self, userdata)
         local main = self.obj
         local row = self.values.row
