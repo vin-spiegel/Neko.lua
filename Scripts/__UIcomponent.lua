@@ -263,22 +263,26 @@ local Control = {
     --**작동안됨
     --{ScriptUnit} => self
     attachToUnit = function(self, point, unit)
-        assert(self and self.obj)
-        assert(point and tostring(point) == "Game.Scripts.ScriptPoint")
-        assert(
-            unit and tostring(unit) == "Game.Scripts.ScriptMyPlayerUnit" or tostring(unit) == "Game.Scripts.ScriptUnit"
-        )
-        self.obj.AttachToUnit(point, unit)
+        print("Control.attachToUnit메소드는 현재 사용 불가능합니다.")
         return self
+        -- assert(self and self.obj)
+        -- assert(point and tostring(point) == "Game.Scripts.ScriptPoint")
+        -- assert(
+        --     unit and tostring(unit) == "Game.Scripts.ScriptMyPlayerUnit" or tostring(unit) == "Game.Scripts.ScriptUnit"
+        -- )
+        -- self.obj.AttachToUnit(point, unit)
+        -- return self
     end,
     --**작동안됨
     --{number} => self
     attachToUnitID = function(self, point, id)
-        assert(self and self.obj)
-        assert(tostring(point) == "Game.Scripts.ScriptPoint")
-        assert(type(id) == "number")
-        self.obj.AttachToUnitID(point, id)
+        print("Control.attachToUnitID 메소드는 현재 사용 불가능합니다.")
         return self
+        -- assert(self and self.obj)
+        -- assert(tostring(point) == "Game.Scripts.ScriptPoint")
+        -- assert(type(id) == "number")
+        -- self.obj.AttachToUnitID(point, id)
+        -- return self
     end,
     --() => self
     clone = function(self)
@@ -321,7 +325,7 @@ local Control = {
         end
         return self
     end,
-    --{table} => self
+    --( table ) => self
     set = function(self, var)
         local tablekeys = function()
             local n = 0
@@ -344,7 +348,7 @@ local Control = {
         end
         return self
     end,
-    --{table} => table
+    --( table ) => table
     class = function(self, obj)
         setmetatable(obj, self)
         self.__index = self
@@ -376,7 +380,6 @@ panel =
         return self
     end,
     --
-    --##funcs
     loadPage = function(self)
         print(self)
         return self
@@ -393,17 +396,17 @@ panel =
 --##button Class
 button =
     Control:class {
-    -- {number or userdata, number, number, number}=> ScriptColor or nil
+    --( number or userdata, number, number, number ) => ScriptColor or nil
     Color = function(self, r, g, b, a)
         local obj = Control.color(self, r, g, b, a)
         return obj or self
     end,
-    -- {number or userdata, number, number, number}=> ScriptColor or nil
+    --( number or userdata, number, number, number ) => ScriptColor or nil
     color = function(self, r, g, b, a)
         local obj = Control.color(self, r, g, b, a)
         return obj or self
     end,
-    -- {function} => EventListner or self
+    --( function ) => EventListner or self
     onClick = function(self, _func)
         local userdata = self.obj
         print(self)
@@ -416,7 +419,7 @@ button =
             return self
         end
     end,
-    -- {string} => string or self
+    --( string ) => string or self
     text = function(self, s)
         local userdata = self.obj
         if not s then
@@ -426,7 +429,7 @@ button =
             return self
         end
     end,
-    -- {number} => number or self
+    --( number ) => number or self
     textAlign = function(self, n)
         local userdata = self.obj
 
@@ -437,12 +440,12 @@ button =
             return self
         end
     end,
-    -- {n or ScriptColor, n, n, n}, => number or self
+    --( n or ScriptColor, n, n, n ) => number or self
     textColor = function(self, r, g, b, a)
         local obj = Control.color(self, r, g, b, a)
         return obj or self
     end,
-    -- { number } => number or self
+    --( number ) => number or self
     textSize = function(self, n)
         local userdata = self.obj
 
@@ -453,7 +456,7 @@ button =
             return self
         end
     end,
-    -- { table } => table
+    --( table ) => table
     new = function(self, var)
         assert(self and self.obj == nil)
         self.__index = self
@@ -465,17 +468,17 @@ button =
 --##Text Class
 text =
     Control:class {
-    --{ number or userdata, number, number, number } => ScriptColor or nil
+    --( number or userdata, number, number, number ) => ScriptColor or nil
     color = function(self, r, g, b, a)
         local obj = Control.color(self, r, g, b, a)
         return obj or self
     end,
-    --{ number or userdata, number, number, number } => ScriptColor or nil
+    --( number or userdata, number, number, number ) => ScriptColor or nil
     Color = function(self, r, g, b, a)
         local obj = Control.color(self, r, g, b, a)
         return obj or self
     end,
-    --{ string } => string or nil
+    --( string ) => string or nil
     text = function(self, s)
         local userdata = self.obj
         if not s then
@@ -515,7 +518,6 @@ text =
         return self.set(inst, var)
     end
 }
-
 gridPanel =
     Control:class {
     new = function(self, var)
