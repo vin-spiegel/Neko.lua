@@ -3,7 +3,7 @@
 
 --##컨트롤 클래스
 local Control = {
-    -- {number,number,number,number} => ScriptRect or self
+    --( number,number,number,number ) => ScriptRect or self
     Rect = function(self, x, y, width, height)
         local userdata = self.obj
 
@@ -20,7 +20,7 @@ local Control = {
         end
         return self
     end,
-    -- {ScriptRect} => ScriptRect or self
+    --( ScriptRect ) => ScriptRect or self
     rect = function(self, rec)
         local userdata = self.obj
         if not rec then
@@ -32,7 +32,7 @@ local Control = {
             return self
         end
     end,
-    --{number or ScriptPoint,number} => ScriptPoint or self
+    --( number or ScriptPoint,number ) => ScriptPoint or self
     xy = function(self, x, y)
         local userdata = self.obj
         if not x and not y then
@@ -47,7 +47,7 @@ local Control = {
             return self
         end
     end,
-    --{number} => number or self
+    --( number ) => number or self
     x = function(self, n)
         local userdata = self.obj
         if not n then
@@ -57,7 +57,7 @@ local Control = {
             return self
         end
     end,
-    --{number} => number or self
+    --( number ) => number or self
     y = function(self, n)
         local userdata = self.obj
         if not n then
@@ -67,7 +67,7 @@ local Control = {
             return self
         end
     end,
-    --{number} => number or self
+    --( number ) => number or self
     width = function(self, n)
         local userdata = self.obj
         if not n then
@@ -77,7 +77,7 @@ local Control = {
             return self
         end
     end,
-    --{number} => number or self
+    --( number ) => number or self
     height = function(self, n)
         local userdata = self.obj
         if not n then
@@ -87,7 +87,7 @@ local Control = {
             return self
         end
     end,
-    --{number or ScriptPoint} => ScriptPoint or self
+    --( number or ScriptPoint ) => ScriptPoint or self
     pivot = function(self, x, y)
         assert(self.obj)
         local userdata = self.obj
@@ -105,7 +105,7 @@ local Control = {
             return self
         end
     end,
-    --{number} => number or self
+    --( number ) => number or self
     pivotX = function(self, n)
         local userdata = self.obj
         if not n then
@@ -115,7 +115,7 @@ local Control = {
             return self
         end
     end,
-    --{number} => number or self
+    --( number ) => number or self
     pivotY = function(self, n)
         local userdata = self.obj
         if not n then
@@ -125,7 +125,7 @@ local Control = {
             return self
         end
     end,
-    --{number} => number or self
+    --( number ) => number or self
     anchor = function(self, n)
         local userdata = self.obj
 
@@ -136,7 +136,7 @@ local Control = {
             return self
         end
     end,
-    -- {number or userdata, number, number, number}=> ScriptColor or nil
+    --( number or userdata, number, number, number ) => ScriptColor or nil
     Color = function(self, r, g, b, a)
         local userdata = self.obj
         if not r and not g and not b and not a then
@@ -154,7 +154,7 @@ local Control = {
             userdata.color = Color(r, g, b)
         end
     end,
-    -- {number or userdata, number, number, number}=> ScriptColor or nil
+    --( number or userdata, number, number, number ) => ScriptColor or nil
     color = function(self, r, g, b, a)
         local userdata = self.obj
         if not r and not g and not b and not a then
@@ -172,7 +172,7 @@ local Control = {
             userdata.color = Color(r, g, b)
         end
     end,
-    -- {ScriptControl}=> table or self
+    --( ScriptControl ) => table or self
     children = function(self, obj)
         local userdata = self.obj
         if not obj then
@@ -190,7 +190,7 @@ local Control = {
             return self
         end
     end,
-    -- {ScriptControl}=> table or self
+    --( ScriptControl ) => table or self
     child = function(self, obj)
         local userdata = self.obj
         if not obj then
@@ -208,7 +208,7 @@ local Control = {
             return self
         end
     end,
-    -- {ScriptControl}=> ScriptControl or self
+    --( ScriptControl ) => ScriptControl or self
     parent = function(self, obj)
         local userdata = self.obj
         if not obj then
@@ -225,7 +225,7 @@ local Control = {
             return self
         end
     end,
-    --{bool} => bool or self
+    --( bool ) => bool or self
     showOnTop = function(self, bool)
         local userdata = self.obj
         if bool == nil then
@@ -238,7 +238,7 @@ local Control = {
             return self
         end
     end,
-    --{n} => n or self
+    --( n ) => n or self
     orderIndex = function(self, n)
         assert(self and self.obj)
         if not n then
@@ -248,20 +248,20 @@ local Control = {
             return self
         end
     end,
-    --{} => self
+    --() => self
     orderToFirst = function(self)
         assert(self and self.obj)
         self.obj.OrderToFirst()
         return self
     end,
-    --{} => self
+    --() => self
     orderToLast = function(self)
         assert(self and self.obj)
         self.obj.OrderToLast()
         return self
     end,
     --**작동안됨
-    --{ScriptUnit} => self
+    --( ScriptUnit ) => self
     attachToUnit = function(self, point, unit)
         print("Control.attachToUnit메소드는 현재 사용 불가능합니다.")
         return self
@@ -274,7 +274,7 @@ local Control = {
         -- return self
     end,
     --**작동안됨
-    --{number} => self
+    --( number ) => self
     attachToUnitID = function(self, point, id)
         print("Control.attachToUnitID 메소드는 현재 사용 불가능합니다.")
         return self
