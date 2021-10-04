@@ -1,0 +1,7 @@
+-- m = {}
+-- m.__call = function(a, b)
+--     print(a, b)
+-- end
+-- t = {}
+-- setmetatable(t, m)
+-- t()

@@ -2,6 +2,19 @@
 --##__UIcomponent.lua
 --##컨트롤 클래스
 local Control = {
+    --( table ) => table
+    class = function(self, obj)
+        setmetatable(obj, self)
+        self.__index = self
+        return obj
+    end,
+    --( table ) => table
+    __call = function(self, var)
+        --인스턴스 객체 생성
+        assert(self and self.obj == nil)
+        self.__index = self
+        return self.new(setmetatable({}, self), var)
+    end,
     --( number, number, number, number ) => ScriptRect or self
     Rect = function(self, x, y, width, height)
         local userdata = self.obj
@@ -182,7 +195,7 @@ local Control = {
                 userdata.AddChild(obj)
             elseif type(obj) == "table" and obj.obj then
                 local child = obj.obj
-                print(child)
+                -- print(child)
                 userdata.AddChild(child)
             end
             return self
@@ -200,7 +213,7 @@ local Control = {
                 userdata.AddChild(obj)
             elseif type(obj) == "table" and obj.obj then
                 local child = obj.obj
-                print(child)
+                -- print(child)
                 userdata.AddChild(child)
             end
             return self
@@ -345,19 +358,12 @@ local Control = {
             end
         end
         return self
-    end,
-    --( table ) => table
-    class = function(self, obj)
-        setmetatable(obj, self)
-        self.__index = self
-        return obj
     end
 }
 
 --#############
 --전역 클래스 정의
 --#############
-
 --##Panel Class
 panel =
     Control:class {
@@ -373,20 +379,18 @@ panel =
         return obj or self
     end,
     --{bool} => bool or self
-    masked = function(self)
+    masked = function(self, bool)
         return self
     end,
     --
     loadPage = function(self)
-        print(self)
         return self
     end,
-    --{table} => self
+    --( table ) => self
     new = function(self, var)
         assert(self and self.obj == nil)
-        self.__index = self
-        local inst = setmetatable({obj = Panel()}, self)
-        return self.set(inst, var)
+        self.obj = Panel()
+        return self:set(var)
     end
 }
 
@@ -406,7 +410,6 @@ button =
     --( function ) => EventListner or self
     onClick = function(self, _func)
         local userdata = self.obj
-        print(self)
         if not _func then
             --get
             return userdata.onClick
@@ -456,9 +459,8 @@ button =
     --( table ) => table
     new = function(self, var)
         assert(self and self.obj == nil)
-        self.__index = self
-        local inst = setmetatable({obj = Button()}, self)
-        return self.set(inst, var)
+        self.obj = Button()
+        return self:set(var)
     end
 }
 
@@ -510,9 +512,8 @@ text =
     --( table ) => table or nil
     new = function(self, var)
         assert(self and self.obj == nil)
-        self.__index = self
-        local inst = setmetatable({obj = Text()}, self)
-        return self.set(inst, var)
+        self.obj = Panel()
+        return self:set(var)
     end
 }
 gridPanel =
@@ -549,21 +550,6 @@ gridPanel =
             return self.values.row
         end
         return self:draw()
-    end,
-    remove = function(self)
-        local main = self.obj
-        local startIndex = self.values.column * self.values.row + 1
-        local temp = {}
-        for i = startIndex, #main.children do
-            temp[i] = main.children[i]
-        end
-        for i = startIndex, #main.children do
-            main.RemoveChild(temp[i])
-            temp[i].Destroy()
-            temp[i] = nil
-        end
-        temp = nil
-        return self
     end,
     draw = function(self, userdata)
         local main = self.obj
@@ -616,25 +602,42 @@ gridPanel =
     --( table ) => table
     new = function(self, var)
         assert(self and self.obj == nil)
-
-        self.__index = self
-        local inst = {
-            --properties
-            obj = Panel(),
-            values = {
-                row = 1,
-                column = 1,
-                padding = 0,
-                cellSize = Point(30, 30)
-            }
+        --properties
+        self.obj = Panel()
+        self.values = {
+            row = 1,
+            column = 1,
+            padding = 0,
+            cellSize = Point(30, 30)
         }
-        setmetatable(inst, self)
-        --그리드패널 초기값 설정
-        inst.obj.color = Color(100, 0, 0, 150)
 
-        return self.set(inst, var)
+        --그리드패널 테스트용 초기값 설정
+        self.obj.color = Color(100, 0, 0, 150)
+
+        return self:set(var)
     end
 }
+--testCode
+local test
+local function foo()
+    local a =
+        button {
+        rect = Rect(0, 0, 50, 50),
+        anchor = 4,
+        onClick = function()
+            if not test then
+                test = gridPanel {}
+            end
+            test:set {
+                width = rand(200, 300),
+                height = rand(400, 500),
+                row = rand(1, 10),
+                column = rand(1, 10)
+            }
+        end
+    }
+end
+Client.RunLater(foo, 2)
 
 inputPanel =
     Control:class {
@@ -648,12 +651,23 @@ inputPanel =
 image =
     Control:class {
     new = function(self, var)
+        print("이미지 뉴 함수 호출")
         assert(self and self.obj == nil)
         self.__index = self
         local inst = setmetatable({obj = Image()}, self)
         return self.set(inst, var)
     end
 }
+
+local function test()
+    -- local a = image:new {width = 100, height = 100}
+    local main = panel {width = 400, height = 400}
+    main:Color(200, 0, 0, 100)
+    local sub = panel {width = 100, height = 100}
+    sub:color(0, 200, 0, 100)
+end
+Client.RunLater(test, 2)
+
 sprite =
     Control:class {
     new = function(self, var)
