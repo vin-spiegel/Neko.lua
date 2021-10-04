@@ -1,19 +1,12 @@
---##UI생성 컴포넌트
---##__UIcomponent.lua
---##컨트롤 클래스
+--UI생성 컴포넌트
+--__UIcomponent.lua
+--//컨트롤 클래스
 local Control = {
     --( table ) => table
     class = function(self, obj)
         setmetatable(obj, self)
         self.__index = self
         return obj
-    end,
-    --( table ) => table
-    __call = function(self, var)
-        --인스턴스 객체 생성
-        assert(self and self.obj == nil)
-        self.__index = self
-        return self.new(setmetatable({}, self), var)
     end,
     --( number, number, number, number ) => ScriptRect or self
     Rect = function(self, x, y, width, height)
@@ -338,6 +331,7 @@ local Control = {
     end,
     --( table ) => self
     set = function(self, var)
+        print("set함수")
         local tablekeys = function()
             local n = 0
             for _, _ in pairs(var) do
@@ -358,13 +352,19 @@ local Control = {
             end
         end
         return self
+    end,
+    --( table ) => table
+    __call = function(self, var)
+        --인스턴스 객체 생성
+        assert(self and self.obj == nil)
+        self.__index = self
+        return self.new(setmetatable({}, self), var)
     end
 }
 
---#############
 --전역 클래스 정의
---#############
---##Panel Class
+
+--//Class Panel
 panel =
     Control:class {
     --##set properties func
@@ -394,7 +394,7 @@ panel =
     end
 }
 
---##button Class
+--//Class Button
 button =
     Control:class {
     --( number or userdata, number, number, number ) => ScriptColor or nil
@@ -459,7 +459,7 @@ button =
     --( table ) => table
     new = function(self, var)
         assert(self and self.obj == nil)
-        self.obj = Button()
+        self.obj = Button(var[1] or "")
         return self:set(var)
     end
 }
@@ -479,10 +479,13 @@ text =
     end,
     --( string ) => string or nil
     text = function(self, s)
+        print("텍스트설정")
         local userdata = self.obj
         if not s then
+            print("case1")
             return userdata.text
         elseif type(s) == "string" then
+            print("case2")
             userdata.text = s
             return self
         end
@@ -512,10 +515,15 @@ text =
     --( table ) => table or nil
     new = function(self, var)
         assert(self and self.obj == nil)
-        self.obj = Panel()
+        local a = var[1] or ""
+        self.obj = Text(var[1] or "")
+        self.obj.height = 50
         return self:set(var)
+        -- return self
     end
 }
+
+--##Class GridPanel
 gridPanel =
     Control:class {
     cellSize = function(self, point)
@@ -617,72 +625,54 @@ gridPanel =
         return self:set(var)
     end
 }
---testCode
-local test
-local function foo()
-    local a =
-        button {
-        rect = Rect(0, 0, 50, 50),
-        anchor = 4,
-        onClick = function()
-            if not test then
-                test = gridPanel {}
-            end
-            test:set {
-                width = rand(200, 300),
-                height = rand(400, 500),
-                row = rand(1, 10),
-                column = rand(1, 10)
-            }
-        end
-    }
-end
-Client.RunLater(foo, 2)
 
-inputPanel =
+scrollPanel =
     Control:class {
     new = function(self, var)
         assert(self and self.obj == nil)
-        self.__index = self
-        local inst = setmetatable({obj = InputPanel()}, self)
-        return self.set(inst, var)
+        self.obj = ScrollPanel()
+        return self:set(var)
     end
 }
-image =
-    Control:class {
-    new = function(self, var)
-        print("이미지 뉴 함수 호출")
-        assert(self and self.obj == nil)
-        self.__index = self
-        local inst = setmetatable({obj = Image()}, self)
-        return self.set(inst, var)
-    end
-}
-
-local function test()
-    -- local a = image:new {width = 100, height = 100}
-    local main = panel {width = 400, height = 400}
-    main:Color(200, 0, 0, 100)
-    local sub = panel {width = 100, height = 100}
-    sub:color(0, 200, 0, 100)
-end
-Client.RunLater(test, 2)
-
+--##Class Sprite
 sprite =
     Control:class {
+    --( table ) => table
     new = function(self, var)
         assert(self and self.obj == nil)
-        self.__index = self
-        local inst = setmetatable({obj = Sprite()}, self)
-        return self.set(inst, var)
+        self.obj = Image()
+        return self:set(var)
     end
 }
+
+--##Class Image
+image =
+    Control:class {
+    --( table ) => table
+    new = function(self, var)
+        assert(self and self.obj == nil)
+        self.obj = Image()
+        return self:set(var)
+    end
+}
+
+--##Class Slider
 slider =
     Control:class {
     new = function(self, var)
         assert(self and self.obj == nil)
-        self.__index = self
-        local inst = setmetatable({obj = Slider()}, self)
-        return self.set(inst, var)
+        self.obj = Slider()
+        return self:set(var)
+    end
+}
+
+--##Class InputPanel
+inputPanel =
+    Control:class {
+    --( table ) => table
+    new = function(self, var)
+        assert(self and self.obj == nil)
+        self.obj = InputField()
+        return self:set(var)
     end
 }
