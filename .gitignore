@@ -11,8 +11,8 @@ Pictures/
 SE/
 Tilesets/
 Windowskins/
-Scripts/
-ServerScripts/
+./Scripts/
+./ServerScripts/
 node_modules/
 db.sqlite
 Game.neko
